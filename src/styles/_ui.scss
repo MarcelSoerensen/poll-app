@@ -1,0 +1,62 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 16px;
+  gap: 0.5rem;
+  overflow: hidden;
+  padding: 0.75em 0.5em 0.75em 1em;
+  border: none;
+  border-radius: 0.5em;
+  background: rgba(247, 209, 167, 1);
+  color: rgb(32, 19, 38);
+  font-size: 1.12rem;
+  font-weight: 600;
+  font-family: 'Mulish', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s, width 0.3s cubic-bezier(.4,0,.2,1);
+  width: auto;
+  max-width: fit-content;
+
+  img {
+    width: 0;
+    opacity: 0;
+    margin: 0;
+    
+    transition: width 0.3s, opacity 0.3s, margin-left 0.3s;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background:rgba(244, 186, 123, 1);
+    outline: none;
+
+    img {
+      width: 1.3rem;
+      opacity: 1;
+      padding-right: 0.4rem;
+    }
+  }
+  
+    &:active {
+      background-color: rgba(247, 209, 167, 1);
+    }
+}
+
+.checkbox {
+  accent-color: var(--primary, #3b82f6);
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.input {
+  padding: 0.5em 1em;
+  border: 1px solid #ccc;
+  border-radius: 0.4em;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  &:focus {
+    border-color: var(--primary, #3b82f6);
+    outline: none;
+  }
+}
