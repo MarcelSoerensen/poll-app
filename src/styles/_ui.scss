@@ -52,12 +52,12 @@
 .input {
   padding: 0.5em 1em;
   border: 1px solid #ccc;
-  border-radius: 0.5em;
+  border-radius: 5px 20px 5px 5px;
   font-size: 1rem;
   font-family: inherit;
-  transition: border-color 0.2s;
-  &:focus {
-    border-color: var(--primary, #3b82f6);
+  transition: all 150ms ease-in-out;
+  &:focus:not(:disabled):not([readonly]) {
+    background-color: rgba(250, 234, 214, 1);
     outline: none;
   }
 }

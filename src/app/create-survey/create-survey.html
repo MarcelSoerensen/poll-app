@@ -1,22 +1,119 @@
 <section id="create-survey">
   <div class="create-survey-page">
     <div class="create-survey-page__header">
-        <p class="status-label">Draft</p>
-        <div class="headline-wrapper">
-          <h2>Create new survey</h2>
-          <button class="basic-button" type="button" routerLink="/main-page">Cancel 
-            <img src="/icons/close.svg" alt="">
-          </button>
-        </div>
+      <p class="status-label">Draft</p>
+      <div class="headline-wrapper">
+        <h2>Create new survey</h2>
+        <button class="basic-button" type="button" routerLink="/main-page">
+          Cancel
+          <img src="/icons/close.svg" alt="" />
+        </button>
+      </div>
       <form class="input-wrapper">
-        
+        <div class="survey-basics">
+          <div class="survey-basics__left">
+            <div class="input-group__field">
+              <label class="input-group__label" for="survey-title">Survey name</label>
+              <div class="input-group__control">
+                <input
+                  id="survey-title"
+                  class="input"
+                  type="text"
+                  placeholder="Enter survey name"
+                />
+                <span class="input-group__delete-icon-wrapper">
+                  <img
+                    class="input-group__delete-icon input-group__delete-icon--default"
+                    src="/icons/delete_default.svg"
+                    alt=""
+                  />
+                  <img
+                    class="input-group__delete-icon input-group__delete-icon--hover"
+                    src="/icons/delete_hover.svg"
+                    alt=""
+                  />
+                </span>
+              </div>
+            </div>
 
+            <div class="survey-basics__row">
+              <div class="input-group__field">
+                <label class="input-group__label" for="survey-end-date">
+                  Set end date <span class="input-group__optional">(optional)</span>
+                </label>
+                <div class="input-group__control">
+                  <input id="survey-end-date" class="input" type="date" />
+                  <span class="input-group__delete-icon-wrapper">
+                    <img
+                      class="input-group__delete-icon input-group__delete-icon--default"
+                      src="/icons/delete_default.svg"
+                      alt=""
+                    />
+                    <img
+                      class="input-group__delete-icon input-group__delete-icon--hover"
+                      src="/icons/delete_hover.svg"
+                      alt=""
+                    />
+                  </span>
+                </div>
+              </div>
+
+              <div class="input-group__field">
+                <details class="category-dropdown">
+                  <summary class="category-dropdown__trigger">Choose category</summary>
+                  <div class="category-dropdown__menu">
+                    <button class="category-dropdown__option" type="button">Team Activities</button>
+                    <button class="category-dropdown__option" type="button">
+                      Health &amp; Wellness
+                    </button>
+                    <button class="category-dropdown__option" type="button">
+                      Gaming &amp; Entertainment
+                    </button>
+                    <button class="category-dropdown__option" type="button">
+                      Education &amp; Learning
+                    </button>
+                    <button class="category-dropdown__option" type="button">
+                      Technology &amp; Innovation
+                    </button>
+                  </div>
+                </details>
+              </div>
+            </div>
+          </div>
+
+          <div class="survey-basics__right">
+            <div class="input-group__field">
+              <label class="input-group__label" for="survey-description">
+                Survey description <span class="input-group__optional">(optional)</span>
+              </label>
+              <div class="input-group__control input-group__control--textarea">
+                <textarea
+                  id="survey-description"
+                  class="input input--textarea"
+                  placeholder="Enter survey description"
+                ></textarea>
+                <span class="input-group__delete-icon-wrapper">
+                  <img
+                    class="input-group__delete-icon input-group__delete-icon--default"
+                    src="/icons/delete_default.svg"
+                    alt=""
+                  />
+                  <img
+                    class="input-group__delete-icon input-group__delete-icon--hover"
+                    src="/icons/delete_hover.svg"
+                    alt=""
+                  />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </form>
       <div class="footer-wrapper">
         <div></div>
-      <button class="button" type="button" routerLink="/create-survey">
-        Publish <img src="/icons/check.svg" alt="" />
-      </button>
+        <button class="button" type="button" routerLink="/create-survey">
+          Publish <img src="/icons/check.svg" alt="" />
+        </button>
       </div>
     </div>
   </div>
