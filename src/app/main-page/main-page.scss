@@ -49,9 +49,30 @@ nav {
   }
 
   > .header-main-right {
-    img {
-      max-height: 420px;
+    .main-page__notepad-symbol-wrapper {
+      position: relative;
+      display: inline-block;
       margin-right: 6%;
+
+      .main-page__notepad-symbol {
+        display: block;
+        max-height: 420px;
+        transition: all 300ms ease-in-out;
+      }
+
+      .main-page__notepad-symbol--hover {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+      }
+
+      &:hover .main-page__notepad-symbol--default {
+        opacity: 0;
+      }
+
+      &:hover .main-page__notepad-symbol--hover {
+        opacity: 1;
+      }
     }
   }
 }

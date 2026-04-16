@@ -13,10 +13,23 @@
         workplace culture. Collect opinions, engage your audience, <br />
         and turn feedback into action.
       </p>
-      <button class="button">New survey <img src="/icons/add_circle.svg" alt=""></button>
+      <button class="button" type="button" routerLink="/create-survey">
+        New survey <img src="/icons/add_circle.svg" alt="" />
+      </button>
     </div>
     <div class="header-main-right">
-        <img src="/icons/notepad_symbol.svg" alt="">
+      <span class="main-page__notepad-symbol-wrapper">
+        <img
+          class="main-page__notepad-symbol main-page__notepad-symbol--default"
+          src="/icons/notepad_symbol_default.svg"
+          alt="Notepad Symbol"
+        />
+        <img
+          class="main-page__notepad-symbol main-page__notepad-symbol--hover"
+          src="/icons/notepad_symbol_hover.svg"
+          alt="Notepad Symbol Hover"
+        />
+      </span>
     </div>
   </div>
 </section>

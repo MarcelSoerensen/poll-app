@@ -1,0 +1,49 @@
+:host {
+  background: rgba(255, 255, 255, 1);
+  display: block;
+  min-height: 100vh;
+}
+
+#create-survey {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-survey-page {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 5px 100px 5px 5px;
+  padding: 40px 54px 40px 54px;
+  gap: 1.25rem;
+  min-height: 75vh;
+  width: min(1440px, 88%);
+  margin-inline: auto;
+  background-color: rgba(51, 40, 57, 1);
+
+  .create-survey-page__header {
+    width: 100%;
+  }
+
+  .headline-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+
+  form {
+    height: 72%;
+    background-color: rgb(64, 52, 72);
+    border-radius: 5px 80px 5px 5px;
+    margin: 1.2rem 0;
+  }
+}
