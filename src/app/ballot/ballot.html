@@ -1,1 +1,97 @@
-<p>ballot works!</p>
+<section id="ballot">
+	<nav class="ballot-nav">
+		<img class="ballot-nav__logo" src="/icons/logo_dark.svg" alt="" routerLink="/main-page" />
+		<button class="button" type="button" routerLink="/create-survey">
+			Create survey <img src="/icons/add_circle.svg" alt="" />
+		</button>
+	</nav>
+
+	<div class="ballot-page">
+
+		<div class="ballot-page__form">
+			<div class="ballot-header">
+				<div class="ballot-header__left">
+					<p class="status-label">Published</p>
+					@if (formattedEndDate()) {
+						<p class="ballot-header__end-date">Ends on {{ formattedEndDate() }}</p>
+					}
+				</div>
+				@if (survey().category) {
+					<p class="ballot-header__category">Category: {{ survey().category }}</p>
+				}
+			</div>
+
+			<h2>{{ survey().title }}</h2>
+
+			@if (survey().description) {
+				<p class="ballot-page__description">{{ survey().description }}</p>
+			}
+
+			<form class="ballot-questions-grid" (submit)="$event.preventDefault()">
+				@for (question of survey().questions; track question.id) {
+					<div class="ballot-question">
+						<p class="ballot-question__title">{{ $index + 1 }}. {{ question.prompt }}</p>
+
+						@if (question.allowMultipleAnswers) {
+							<p class="ballot-question__multiple-hint">More than one answer is possible.</p>
+						}
+
+						<div class="ballot-question__answers" [attr.role]="question.allowMultipleAnswers ? 'group' : 'radiogroup'" [attr.aria-label]="question.prompt">
+							@for (answer of question.answers; track $index) {
+								<button
+									class="ballot-question__answer"
+									[class.ballot-question__answer--selected]="isAnswerSelected(question.id, $index)"
+									type="button"
+									[attr.role]="question.allowMultipleAnswers ? 'checkbox' : 'radio'"
+									[attr.aria-checked]="isAnswerSelected(question.id, $index)"
+									(click)="toggleAnswer(question, $index)"
+								>
+									<span class="ballot-question__checkbox-wrapper">
+										<img class="ballot-question__checkbox ballot-question__checkbox--default" src="/icons/checkbox_dark_default.svg" alt="" />
+										<img class="ballot-question__checkbox ballot-question__checkbox--checked" src="/icons/checkbox_checked.svg" alt="" />
+									</span>
+									<span class="ballot-question__answer-label">{{ getAnswerLabel($index) }}</span>
+									<span class="ballot-question__answer-text">{{ answer }}</span>
+								</button>
+							}
+						</div>
+					</div>
+				}
+
+				<div class="ballot-form__footer">
+					<button class="button" type="submit">
+						Submit <img src="/icons/check.svg" alt="" />
+					</button>
+				</div>
+			</form>
+		</div>
+
+		<div class="ballot-page__results">
+			<h2 class="ballot-results__title">Survey results <span class="ballot-results__title-live">LIVE</span></h2>
+
+			<div class="ballot-results__list">
+				@for (question of survey().questions; track question.id) {
+					<div class="ballot-results__question">
+						<p class="ballot-results__question-title">{{ $index + 1 }}. {{ question.prompt }}</p>
+
+						<div class="ballot-results__answers">
+							@for (answer of question.answers; track $index) {
+								<div class="ballot-results__answer-row">
+									<span class="ballot-results__answer-label">{{ getAnswerLabel($index) }}</span>
+									<div class="ballot-results__bar-track">
+										<div
+											class="ballot-results__bar-fill"
+											[style.width.%]="getAnswerPercentage(question.id, $index)"
+										></div>
+									</div>
+									<span class="ballot-results__percentage">{{ getAnswerPercentage(question.id, $index) }}%</span>
+								</div>
+							}
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+
+	</div>
+</section>
