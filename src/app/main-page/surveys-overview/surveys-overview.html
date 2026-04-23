@@ -10,7 +10,7 @@
             <p class="survey-preview-card__category">{{ survey.category }}</p>
             <h3 class="survey-preview-card__title">{{ survey.title }}</h3>
           </div>
-          <p class="survey-preview-card__ending-badge">Ends in {{ survey.endsIn }}</p>
+          <p class="survey-preview-card__ending-badge">{{ getEndingBadgeLabel(survey) }}</p>
         </a>
       }
     </div>
@@ -76,7 +76,7 @@
             <p class="survey-preview-card__category">{{ survey.category }}</p>
             <h3 class="survey-preview-card__title">{{ survey.title }}</h3>
           </div>
-          <p class="survey-preview-card__ending-badge">Ends in {{ survey.endsIn }}</p>
+          <p class="survey-preview-card__ending-badge">{{ getEndingBadgeLabel(survey) }}</p>
         </a>
       }
     </div>

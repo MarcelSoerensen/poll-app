@@ -10,4 +10,7 @@ import { SurveysOverview } from './surveys-overview/surveys-overview';
   styleUrls: ['./main-page.scss'],
 })
 export class MainPage {
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }

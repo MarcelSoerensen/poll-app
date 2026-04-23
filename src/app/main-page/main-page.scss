@@ -1,7 +1,7 @@
 :host {
   background: rgba(51, 40, 57, 1);
   display: block;
-  min-height: 1200vh;
+  min-height: 100vh;
 }
 
 nav {
@@ -13,6 +13,13 @@ nav {
   height: auto;
   padding: 1rem 6%;
   gap: 1.25rem;
+
+  .main-page__logo-button {
+    border: 0;
+    background: transparent;
+    padding: 0;
+  }
+
   img {
     cursor: pointer;
     &:hover {

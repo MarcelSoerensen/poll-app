@@ -105,4 +105,8 @@ export class SurveysOverview {
     this.selectedCategory.set(null);
     this.isCategoryDropdownOpen.set(false);
   }
+
+  getEndingBadgeLabel(survey: SurveyPreview): string {
+    return survey.status === 'past' ? survey.endsIn : `Ends in ${survey.endsIn}`;
+  }
 }
