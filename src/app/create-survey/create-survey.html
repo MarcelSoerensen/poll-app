@@ -20,8 +20,10 @@
                   class="input"
                   type="text"
                   placeholder="Enter survey name"
+                  [value]="survey().title"
+                  (input)="updateTitle($event)"
                 />
-                <span class="input-group__delete-icon-wrapper">
+                <span class="input-group__delete-icon-wrapper" (click)="clearTitle()">
                   <img
                     class="input-group__delete-icon input-group__delete-icon--default"
                     src="/icons/delete_default.svg"
@@ -42,8 +44,14 @@
                   Set end date <span class="input-group__optional">(optional)</span>
                 </label>
                 <div class="input-group__control">
-                  <input id="survey-end-date" class="input" type="date" />
-                  <span class="input-group__delete-icon-wrapper">
+                  <input
+                    id="survey-end-date"
+                    class="input"
+                    type="date"
+                    [value]="survey().endDate"
+                    (input)="updateEndDate($event)"
+                  />
+                  <span class="input-group__delete-icon-wrapper" (click)="clearEndDate()">
                     <img
                       class="input-group__delete-icon input-group__delete-icon--default"
                       src="/icons/delete_default.svg"
@@ -58,25 +66,39 @@
                 </div>
               </div>
 
-              <div class="input-group__field">
-                <details class="category-dropdown">
-                  <summary class="category-dropdown__trigger">Choose category</summary>
-                  <div class="category-dropdown__menu">
-                    <button class="category-dropdown__option" type="button">Team Activities</button>
-                    <button class="category-dropdown__option" type="button">
-                      Health &amp; Wellness
-                    </button>
-                    <button class="category-dropdown__option" type="button">
-                      Gaming &amp; Entertainment
-                    </button>
-                    <button class="category-dropdown__option" type="button">
-                      Education &amp; Learning
-                    </button>
-                    <button class="category-dropdown__option" type="button">
-                      Technology &amp; Innovation
-                    </button>
-                  </div>
-                </details>
+              <div
+                class="category-dropdown"
+                [class.category-dropdown--open]="isCategoryDropdownOpen()"
+              >
+                <button
+                  class="category-dropdown__trigger"
+                  type="button"
+                  aria-haspopup="listbox"
+                  [attr.aria-expanded]="isCategoryDropdownOpen()"
+                  (click)="toggleCategoryDropdown()"
+                >
+                  Choose category
+                </button>
+
+                @if (selectedCategory()) {
+                  <p class="category-dropdown__selected" (click)="clearCategory()">{{ selectedCategory() }}</p>
+                }
+
+                @if (isCategoryDropdownOpen()) {
+                  <ul class="category-dropdown__menu" role="listbox" aria-label="Choose category">
+                    @for (category of categories; track category) {
+                      <li class="category-dropdown__item">
+                        <button
+                          class="category-dropdown__option"
+                          type="button"
+                          (click)="selectCategory(category)"
+                        >
+                          {{ category }}
+                        </button>
+                      </li>
+                    }
+                  </ul>
+                }
               </div>
             </div>
           </div>
@@ -91,8 +113,10 @@
                   id="survey-description"
                   class="input input--textarea"
                   placeholder="Enter survey description"
+                  [value]="survey().description"
+                  (input)="updateDescription($event)"
                 ></textarea>
-                <span class="input-group__delete-icon-wrapper">
+                <span class="input-group__delete-icon-wrapper" (click)="clearDescription()">
                   <img
                     class="input-group__delete-icon input-group__delete-icon--default"
                     src="/icons/delete_default.svg"
@@ -108,6 +132,24 @@
             </div>
           </div>
         </div>
+
+        <section class="questions-section" aria-label="Survey questions">
+          <div class="questions-grid">
+            @for (question of questions(); track question.id) {
+              <app-question-item
+                [question]="question"
+                [questionNumber]="$index + 1"
+                (questionUpdated)="updateQuestion($event)"
+                (questionDeleted)="deleteQuestion($event)"
+              />
+            }
+
+            <button class="basic-button questions-grid__add-button" type="button" (click)="addQuestion()">
+              Add next Question
+              <img src="/icons/add_circle_white.svg" alt="" aria-hidden="true" />
+            </button>
+          </div>
+        </section>
       </form>
       <div class="footer-wrapper">
         <div></div>

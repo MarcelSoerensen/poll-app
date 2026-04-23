@@ -1,0 +1,68 @@
+<section class="question-item">
+  <div class="question-item__header">
+    <p class="question-item__title">{{ questionNumber() }}. Question</p>
+    <button class="question-item__icon-button" type="button" aria-label="Delete question" (click)="deleteQuestion()">
+      <span class="question-item__delete-icon-wrapper">
+        <img class="question-item__delete-icon question-item__delete-icon--default" src="/icons/delete_default.svg" alt="" />
+        <img class="question-item__delete-icon question-item__delete-icon--hover" src="/icons/delete_hover.svg" alt="" />
+      </span>
+    </button>
+  </div>
+
+  <div class="question-item__field">
+    <input
+      class="input"
+      type="text"
+      placeholder="Enter question"
+      [value]="question().prompt"
+      (input)="updatePrompt($event)"
+    />
+  </div>
+
+  <div class="question-item__answers-header">
+    <p class="question-item__answers-title">Answers</p>
+    <button
+      class="question-item__checkbox-button"
+      [class.question-item__checkbox-button--checked]="question().allowMultipleAnswers"
+      type="button"
+      (click)="toggleMultipleAnswers()"
+    >
+      <span class="question-item__checkbox-icon-wrapper">
+        <img class="question-item__checkbox-icon question-item__checkbox-icon--default" src="/icons/checkbox_white_default.svg" alt="" />
+        <img class="question-item__checkbox-icon question-item__checkbox-icon--hover" src="/icons/checkbox_hover.svg" alt="" />
+        <img class="question-item__checkbox-icon question-item__checkbox-icon--checked" src="/icons/checkbox_checked.svg" alt="" />
+      </span>
+      <span>Allow multiple answers</span>
+    </button>
+  </div>
+
+  <div class="question-item__answers-list">
+    @for (answer of question().answers; track $index) {
+      <div class="question-item__answer-row">
+        <span class="question-item__answer-label">{{ getAnswerLabel($index) }}</span>
+        <input
+          class="input"
+          type="text"
+          placeholder="Enter answer"
+          [value]="answer"
+          (input)="updateAnswer($index, $event)"
+        />
+        <button class="question-item__icon-button" type="button" aria-label="Delete answer" (click)="deleteAnswer($index)">
+          <span class="question-item__delete-icon-wrapper">
+            <img class="question-item__delete-icon question-item__delete-icon--default" src="/icons/delete_default.svg" alt="" />
+            <img class="question-item__delete-icon question-item__delete-icon--hover" src="/icons/delete_hover.svg" alt="" />
+          </span>
+        </button>
+      </div>
+    }
+    <div class="question-item__add-answer-row">
+      @if (question().answers.length < maxAnswers) {
+        <button class="question-item__add-answer-button" type="button" (click)="addAnswer()">
+          Add answer
+          <span class="question-item__add-answer-icon" aria-hidden="true"></span>
+        </button>
+      }
+      <p class="question-item__add-answer-hint">You can add up to 6 answer fields.</p>
+    </div>
+  </div>
+</section>
