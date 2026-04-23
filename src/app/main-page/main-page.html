@@ -33,22 +33,5 @@
     </div>
   </div>
 
-  <section class="surveys-overview" aria-labelledby="your-surveys-title">
-    <div class="surveys-overview__inner">
-      <h2 id="your-surveys-title">Your surveys</h2>
-      <p class="surveys-overview__subtitle">Ending soon surveys</p>
-
-      <div class="surveys-overview__grid">
-        @for (survey of visibleEndingSoonSurveys(); track survey.id) {
-          <a class="survey-preview-card" [routerLink]="['/ballot', survey.id]" [attr.aria-label]="'Open survey ' + survey.title">
-            <div>
-              <p class="survey-preview-card__category">{{ survey.category }}</p>
-              <h3 class="survey-preview-card__title">{{ survey.title }}</h3>
-            </div>
-            <p class="survey-preview-card__ending-badge">Ends in {{ survey.endsIn }}</p>
-          </a>
-        }
-      </div>
-    </div>
-  </section>
+  <app-main-page-surveys-overview />
 </section>

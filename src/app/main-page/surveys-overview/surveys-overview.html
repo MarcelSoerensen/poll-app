@@ -1,0 +1,84 @@
+<section class="surveys-overview" aria-labelledby="your-surveys-title">
+  <div class="surveys-overview__inner">
+    <h2 id="your-surveys-title">Your surveys</h2>
+    <p class="surveys-overview__subtitle">Ending soon surveys</p>
+
+    <div class="surveys-overview__grid surveys-overview__grid--three">
+      @for (survey of endingSoonSurveys(); track survey.id) {
+        <a class="survey-preview-card survey-preview-card--light" [routerLink]="['/ballot', survey.id]" [attr.aria-label]="'Open survey ' + survey.title">
+          <div class="survey-preview-card__content">
+            <p class="survey-preview-card__category">{{ survey.category }}</p>
+            <h3 class="survey-preview-card__title">{{ survey.title }}</h3>
+          </div>
+          <p class="survey-preview-card__ending-badge">Ends in {{ survey.endsIn }}</p>
+        </a>
+      }
+    </div>
+
+    <div class="surveys-overview__controls">
+      <div class="surveys-overview__status-buttons" role="tablist" aria-label="Survey status filter">
+        <button
+          class="surveys-overview__status-button"
+          [class.surveys-overview__status-button--active]="statusFilter() === 'active'"
+          type="button"
+          role="tab"
+          [attr.aria-selected]="statusFilter() === 'active'"
+          (click)="setStatusFilter('active')"
+        >
+          Active survey
+        </button>
+        <button
+          class="surveys-overview__status-button"
+          [class.surveys-overview__status-button--active]="statusFilter() === 'past'"
+          type="button"
+          role="tab"
+          [attr.aria-selected]="statusFilter() === 'past'"
+          (click)="setStatusFilter('past')"
+        >
+          Past survey
+        </button>
+      </div>
+
+      <div class="category-dropdown" [class.category-dropdown--open]="isCategoryDropdownOpen()">
+        <button
+          class="category-dropdown__trigger"
+          type="button"
+          aria-haspopup="listbox"
+          [attr.aria-expanded]="isCategoryDropdownOpen()"
+          (click)="toggleCategoryDropdown()"
+        >
+          Sort by category
+        </button>
+
+        @if (isCategoryDropdownOpen()) {
+          <ul class="category-dropdown__menu" role="listbox" aria-label="Choose categorie">
+            <li class="category-dropdown__item">
+              <button class="category-dropdown__option" type="button" (click)="clearCategory()">
+                All categories
+              </button>
+            </li>
+            @for (category of categories(); track category) {
+              <li class="category-dropdown__item">
+                <button class="category-dropdown__option" type="button" (click)="selectCategory(category)">
+                  {{ category }}
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+
+    <div class="surveys-overview__grid surveys-overview__grid--two">
+      @for (survey of visibleSurveys(); track survey.id) {
+        <a class="survey-preview-card survey-preview-card--dark" [routerLink]="['/ballot', survey.id]" [attr.aria-label]="'Open survey ' + survey.title">
+          <div class="survey-preview-card__content">
+            <p class="survey-preview-card__category">{{ survey.category }}</p>
+            <h3 class="survey-preview-card__title">{{ survey.title }}</h3>
+          </div>
+          <p class="survey-preview-card__ending-badge">Ends in {{ survey.endsIn }}</p>
+        </a>
+      }
+    </div>
+  </div>
+</section>
