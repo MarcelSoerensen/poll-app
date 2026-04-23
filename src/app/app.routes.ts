@@ -11,6 +11,7 @@ export const routes: Routes = [
     {path: 'main-page', component: MainPage},
     {path: 'create-survey', component: CreateSurvey},
     {path: 'ballot', component: Ballot},
+    {path: 'ballot/:id', component: Ballot},
     {path: 'privacy-policy', component: PrivacyPolicy},
     {path: 'imprint', component: Imprint},
 ];
