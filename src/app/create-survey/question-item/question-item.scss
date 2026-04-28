@@ -12,7 +12,6 @@
 
 .question-item__header,
 .question-item__answers-header,
-.question-item__control,
 .question-item__answer-row {
   display: flex;
   align-items: center;
@@ -31,7 +30,12 @@
   font-family: 'Mulish', sans-serif;
 }
 
-.question-item__control,
+.question-item__title--invalid,
+.question-item__answers-title--invalid,
+.question-item__answer-label--invalid {
+  color: rgba(255, 147, 147, 1);
+}
+
 .question-item__answer-row {
   gap: 0.75rem;
 }
@@ -150,6 +154,11 @@
 .input {
   width: 100%;
   box-sizing: border-box;
+}
+
+.input--invalid {
+  border-color: rgba(255, 147, 147, 1);
+  box-shadow: 0 0 0 1px rgba(255, 147, 147, 1);
 }
 
 .question-item__add-answer-button {

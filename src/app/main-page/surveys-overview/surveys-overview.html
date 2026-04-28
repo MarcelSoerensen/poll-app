@@ -3,17 +3,25 @@
     <h2 id="your-surveys-title">Your surveys</h2>
     <p class="surveys-overview__subtitle">Ending soon surveys</p>
 
-    <div class="surveys-overview__grid surveys-overview__grid--three">
-      @for (survey of endingSoonSurveys(); track survey.id) {
-        <a class="survey-preview-card survey-preview-card--light" [routerLink]="['/ballot', survey.id]" [attr.aria-label]="'Open survey ' + survey.title">
-          <div class="survey-preview-card__content">
-            <p class="survey-preview-card__category">{{ survey.category }}</p>
-            <h3 class="survey-preview-card__title">{{ survey.title }}</h3>
-          </div>
-          <p class="survey-preview-card__ending-badge">{{ getEndingBadgeLabel(survey) }}</p>
-        </a>
-      }
-    </div>
+    @if (loadError()) {
+      <p class="surveys-overview__message surveys-overview__message--error">{{ loadError() }}</p>
+    } @else if (isLoading()) {
+      <p class="surveys-overview__message">Loading surveys...</p>
+    } @else {
+      <div class="surveys-overview__grid surveys-overview__grid--three">
+        @for (survey of endingSoonSurveys(); track survey.id) {
+          <a class="survey-preview-card survey-preview-card--light" [routerLink]="['/ballot', survey.id]" [attr.aria-label]="'Open survey ' + survey.title">
+            <div class="survey-preview-card__content">
+              <p class="survey-preview-card__category">{{ survey.category }}</p>
+              <h3 class="survey-preview-card__title">{{ survey.title }}</h3>
+            </div>
+            <p class="survey-preview-card__ending-badge">{{ getEndingBadgeLabel(survey) }}</p>
+          </a>
+        } @empty {
+          <p class="surveys-overview__message">No active surveys with upcoming deadlines yet.</p>
+        }
+      </div>
+    }
 
     <div class="surveys-overview__controls">
       <div class="surveys-overview__status-buttons" role="tablist" aria-label="Survey status filter">
@@ -69,16 +77,30 @@
       </div>
     </div>
 
-    <div class="surveys-overview__grid surveys-overview__grid--two">
-      @for (survey of visibleSurveys(); track survey.id) {
-        <a class="survey-preview-card survey-preview-card--dark" [routerLink]="['/ballot', survey.id]" [attr.aria-label]="'Open survey ' + survey.title">
-          <div class="survey-preview-card__content">
-            <p class="survey-preview-card__category">{{ survey.category }}</p>
-            <h3 class="survey-preview-card__title">{{ survey.title }}</h3>
-          </div>
-          <p class="survey-preview-card__ending-badge">{{ getEndingBadgeLabel(survey) }}</p>
-        </a>
-      }
-    </div>
+    @if (!loadError() && !isLoading()) {
+      <div class="surveys-overview__grid surveys-overview__grid--two">
+        @for (survey of visibleSurveys(); track survey.id) {
+          @if (survey.status === 'active') {
+            <a class="survey-preview-card survey-preview-card--dark" [routerLink]="['/ballot', survey.id]" [attr.aria-label]="'Open survey ' + survey.title">
+              <div class="survey-preview-card__content">
+                <p class="survey-preview-card__category">{{ survey.category }}</p>
+                <h3 class="survey-preview-card__title">{{ survey.title }}</h3>
+              </div>
+              <p class="survey-preview-card__ending-badge">{{ getEndingBadgeLabel(survey) }}</p>
+            </a>
+          } @else {
+            <article class="survey-preview-card survey-preview-card--dark survey-preview-card--disabled" aria-label="Past survey {{ survey.title }}">
+              <div class="survey-preview-card__content">
+                <p class="survey-preview-card__category">{{ survey.category }}</p>
+                <h3 class="survey-preview-card__title">{{ survey.title }}</h3>
+              </div>
+              <p class="survey-preview-card__ending-badge">{{ getEndingBadgeLabel(survey) }}</p>
+            </article>
+          }
+        } @empty {
+          <p class="surveys-overview__message">No surveys match the current filter.</p>
+        }
+      </div>
+    }
   </div>
 </section>

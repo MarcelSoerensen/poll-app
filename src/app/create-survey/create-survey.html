@@ -13,14 +13,18 @@
         <div class="survey-basics">
           <div class="survey-basics__left">
             <div class="input-group__field">
-              <label class="input-group__label" for="survey-title">Survey name</label>
+              <label class="input-group__label" [class.input-group__label--invalid]="isTitleInvalid()" for="survey-title">
+                Survey name
+              </label>
               <div class="input-group__control">
                 <input
                   id="survey-title"
                   class="input"
+                  [class.input--invalid]="isTitleInvalid()"
                   type="text"
                   placeholder="Enter survey name"
                   [value]="survey().title"
+                  [attr.aria-invalid]="isTitleInvalid()"
                   (input)="updateTitle($event)"
                 />
                 <span class="input-group__delete-icon-wrapper" (click)="clearTitle()">
@@ -48,6 +52,7 @@
                     id="survey-end-date"
                     class="input"
                     type="date"
+                    [attr.min]="minimumEndDate"
                     [value]="survey().endDate"
                     (input)="updateEndDate($event)"
                   />
@@ -139,6 +144,8 @@
               <app-question-item
                 [question]="question"
                 [questionNumber]="$index + 1"
+                [questionInvalid]="isQuestionInvalid(question.id)"
+                [invalidAnswerIndexes]="getInvalidAnswerIndexes(question.id)"
                 (questionUpdated)="updateQuestion($event)"
                 (questionDeleted)="deleteQuestion($event)"
               />
@@ -153,10 +160,31 @@
       </form>
       <div class="footer-wrapper">
         <div></div>
-        <button class="button" type="button" routerLink="/create-survey">
-          Publish <img src="/icons/check.svg" alt="" />
-        </button>
+        <div class="publish-actions">
+          <button class="button" type="button" [disabled]="isPublishing()" (click)="publishSurvey()">
+            Publish <img src="/icons/check.svg" alt="" />
+          </button>
+          @if (isPublishOverlayVisible()) {
+            <aside class="publish-overlay" aria-live="polite" aria-label="Survey published">
+              <h4 class="publish-overlay__title">Your survey is now published</h4>
+              <button
+                class="publish-overlay__close-button"
+                type="button"
+                aria-label="Open published survey"
+                (click)="openPublishedSurvey()"
+              >
+                <img class="publish-overlay__close-icon" src="/icons/close_dark.svg" alt="" />
+              </button>
+            </aside>
+          }
+        </div>
       </div>
+      @if (validationMessage()) {
+        <p class="publish-message publish-message--error">{{ validationMessage() }}</p>
+      }
+      @if (publishError()) {
+        <p class="publish-message publish-message--error">{{ publishError() }}</p>
+      }
     </div>
   </div>
 </section>

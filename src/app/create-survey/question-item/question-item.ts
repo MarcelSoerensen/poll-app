@@ -12,11 +12,17 @@ import { createSurveyQuestion, type SurveyQuestion } from './question-item.model
 export class QuestionItem {
   readonly question = input.required<SurveyQuestion>();
   readonly questionNumber = input.required<number>();
+  readonly questionInvalid = input(false);
+  readonly invalidAnswerIndexes = input<number[]>([]);
 
   readonly questionUpdated = output<SurveyQuestion>();
   readonly questionDeleted = output<number>();
 
   readonly maxAnswers = 6;
+
+  isAnswerInvalid(index: number): boolean {
+    return this.invalidAnswerIndexes().includes(index);
+  }
 
   getAnswerLabel(index: number): string {
     return String.fromCharCode(65 + index) + '.';

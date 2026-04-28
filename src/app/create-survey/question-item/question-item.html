@@ -1,6 +1,8 @@
 <section class="question-item">
   <div class="question-item__header">
-    <p class="question-item__title">{{ questionNumber() }}. Question</p>
+    <p class="question-item__title" [class.question-item__title--invalid]="questionInvalid()">
+      {{ questionNumber() }}. Question
+    </p>
     <button class="question-item__icon-button" type="button" aria-label="Delete question" (click)="deleteQuestion()">
       <span class="question-item__delete-icon-wrapper">
         <img class="question-item__delete-icon question-item__delete-icon--default" src="/icons/delete_default.svg" alt="" />
@@ -12,15 +14,19 @@
   <div class="question-item__field">
     <input
       class="input"
+      [class.input--invalid]="questionInvalid()"
       type="text"
       placeholder="Enter question"
       [value]="question().prompt"
+      [attr.aria-invalid]="questionInvalid()"
       (input)="updatePrompt($event)"
     />
   </div>
 
   <div class="question-item__answers-header">
-    <p class="question-item__answers-title">Answers</p>
+    <p class="question-item__answers-title" [class.question-item__answers-title--invalid]="invalidAnswerIndexes().length > 0">
+      Answers
+    </p>
     <button
       class="question-item__checkbox-button"
       [class.question-item__checkbox-button--checked]="question().allowMultipleAnswers"
@@ -39,12 +45,16 @@
   <div class="question-item__answers-list">
     @for (answer of question().answers; track $index) {
       <div class="question-item__answer-row">
-        <span class="question-item__answer-label">{{ getAnswerLabel($index) }}</span>
+        <span class="question-item__answer-label" [class.question-item__answer-label--invalid]="isAnswerInvalid($index)">
+          {{ getAnswerLabel($index) }}
+        </span>
         <input
           class="input"
+          [class.input--invalid]="isAnswerInvalid($index)"
           type="text"
           placeholder="Enter answer"
           [value]="answer"
+          [attr.aria-invalid]="isAnswerInvalid($index)"
           (input)="updateAnswer($index, $event)"
         />
         <button class="question-item__icon-button" type="button" aria-label="Delete answer" (click)="deleteAnswer($index)">

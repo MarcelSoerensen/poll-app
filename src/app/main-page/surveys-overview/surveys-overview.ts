@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
+import { SupabaseService, type SurveyRow } from '../../shared/data-access/supabase.service';
 
 type SurveyStatus = 'active' | 'past';
 
@@ -7,8 +9,13 @@ interface SurveyPreview {
   id: number;
   category: string;
   title: string;
-  endsIn: string;
+  endDate: string | null;
   status: SurveyStatus;
+}
+
+function toStartOfDay(value: string): Date {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day);
 }
 
 @Component({
@@ -19,47 +26,15 @@ interface SurveyPreview {
   styleUrl: './surveys-overview.scss',
 })
 export class SurveysOverview {
+  private readonly supabaseService = inject(SupabaseService);
+
   readonly statusFilter = signal<SurveyStatus>('active');
   readonly selectedCategory = signal<string | null>(null);
   readonly isCategoryDropdownOpen = signal(false);
+  readonly isLoading = signal(true);
+  readonly loadError = signal<string | null>(null);
 
-  readonly surveys = signal<SurveyPreview[]>([
-    {
-      id: 1,
-      category: 'Team Activities',
-      title: "Let's Plan the Next Team Event Together",
-      endsIn: '1 Day',
-      status: 'active',
-    },
-    {
-      id: 2,
-      category: 'Health & Wellness',
-      title: 'Choose the Next Office Wellness Program',
-      endsIn: '3 Days',
-      status: 'active',
-    },
-    {
-      id: 3,
-      category: 'Education & Learning',
-      title: 'Vote for the Next Learning Workshop Topic',
-      endsIn: '5 Days',
-      status: 'active',
-    },
-    {
-      id: 4,
-      category: 'Technology & Innovation',
-      title: 'Pick the Tooling Focus for Next Quarter',
-      endsIn: 'Ended',
-      status: 'past',
-    },
-    {
-      id: 5,
-      category: 'Team Activities',
-      title: 'Retrospective: Team Offsite Format',
-      endsIn: 'Ended',
-      status: 'past',
-    },
-  ]);
+  readonly surveys = signal<SurveyPreview[]>([]);
 
   readonly categories = computed(() =>
     [...new Set(this.surveys().map((survey) => survey.category))],
@@ -68,6 +43,7 @@ export class SurveysOverview {
   readonly endingSoonSurveys = computed(() =>
     this.surveys()
       .filter((survey) => survey.status === 'active')
+      .sort((left, right) => this.compareSurveysByEndDate(left, right, 'asc'))
       .slice(0, 3),
   );
 
@@ -85,8 +61,16 @@ export class SurveysOverview {
       }
 
       return true;
-    });
+    }).sort((left, right) =>
+      status === 'active'
+        ? this.compareSurveysByEndDate(left, right, 'asc')
+        : this.compareSurveysByEndDate(left, right, 'desc'),
+    );
   });
+
+  constructor() {
+    void this.loadSurveys();
+  }
 
   setStatusFilter(status: SurveyStatus): void {
     this.statusFilter.set(status);
@@ -107,6 +91,71 @@ export class SurveysOverview {
   }
 
   getEndingBadgeLabel(survey: SurveyPreview): string {
-    return survey.status === 'past' ? survey.endsIn : `Ends in ${survey.endsIn}`;
+    if (!survey.endDate) {
+      return survey.status === 'past' ? 'Ended' : 'No deadline';
+    }
+
+    if (survey.status === 'past') {
+      return 'Ended';
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const endDate = toStartOfDay(survey.endDate);
+    const diffInMs = endDate.getTime() - today.getTime();
+    const diffInDays = Math.ceil(diffInMs / 86_400_000);
+
+    if (diffInDays <= 0) {
+      return 'Ends today';
+    }
+
+    return diffInDays === 1 ? 'Ends in 1 day' : `Ends in ${diffInDays} days`;
+  }
+
+  private async loadSurveys(): Promise<void> {
+    this.isLoading.set(true);
+    this.loadError.set(null);
+
+    try {
+      const rows = await this.supabaseService.loadSurveys();
+      this.surveys.set(rows.map((row) => this.mapSurveyRow(row)));
+    } catch (error: unknown) {
+      this.loadError.set(error instanceof Error ? error.message : 'Unbekannter Fehler beim Laden der Surveys.');
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  private mapSurveyRow(row: SurveyRow): SurveyPreview {
+    return {
+      id: row.id,
+      category: row.category || 'Uncategorized',
+      title: row.title,
+      endDate: row.end_date,
+      status: this.getSurveyStatus(row.end_date),
+    };
+  }
+
+  private getSurveyStatus(endDate: string | null): SurveyStatus {
+    if (!endDate) {
+      return 'active';
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return toStartOfDay(endDate) < today ? 'past' : 'active';
+  }
+
+  private compareSurveysByEndDate(
+    left: SurveyPreview,
+    right: SurveyPreview,
+    direction: 'asc' | 'desc',
+  ): number {
+    const leftValue = left.endDate ? toStartOfDay(left.endDate).getTime() : Number.POSITIVE_INFINITY;
+    const rightValue = right.endDate ? toStartOfDay(right.endDate).getTime() : Number.POSITIVE_INFINITY;
+
+    return direction === 'asc' ? leftValue - rightValue : rightValue - leftValue;
   }
 }

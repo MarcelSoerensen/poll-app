@@ -27,6 +27,12 @@
 				<p class="ballot-page__description">{{ survey().description }}</p>
 			}
 
+			@if (loadError()) {
+				<p class="ballot-page__message ballot-page__message--error">{{ loadError() }}</p>
+			} @else if (isLoading()) {
+				<p class="ballot-page__message">Loading survey...</p>
+			}
+
 			<form class="ballot-questions-grid" (submit)="$event.preventDefault()">
 				@for (question of survey().questions; track question.id) {
 					<div class="ballot-question">
@@ -54,15 +60,26 @@
 									<span class="ballot-question__answer-text">{{ answer }}</span>
 								</button>
 							}
+							@if (question.answers.length === 0) {
+								<p class="ballot-page__message ballot-page__message--muted">No answer options available yet.</p>
+							}
 						</div>
 					</div>
+				} @empty {
+					@if (!isLoading() && !loadError()) {
+						<p class="ballot-page__message ballot-page__message--muted">
+							No questions available for this survey yet.
+						</p>
+					}
 				}
 
-				<div class="ballot-form__footer">
-					<button class="button" type="submit">
-						Submit <img src="/icons/check.svg" alt="" />
-					</button>
-				</div>
+				@if (survey().questions.length > 0) {
+					<div class="ballot-form__footer">
+						<button class="button" type="submit">
+							Submit <img src="/icons/check.svg" alt="" />
+						</button>
+					</div>
+				}
 			</form>
 		</div>
 
@@ -89,6 +106,12 @@
 							}
 						</div>
 					</div>
+				} @empty {
+					@if (!isLoading() && !loadError()) {
+						<p class="ballot-page__message ballot-page__message--muted">
+							Live results will be shown here once answers and votes are stored in the database.
+						</p>
+					}
 				}
 			</div>
 		</div>

@@ -112,6 +112,21 @@
 	line-height: 1.6;
 }
 
+.ballot-page__message {
+	margin: 0 0 2rem;
+	font-size: 0.95rem;
+	line-height: 1.5;
+	color: rgba(51, 40, 57, 0.9);
+}
+
+.ballot-page__message--error {
+	color: rgba(194, 67, 67, 1);
+}
+
+.ballot-page__message--muted {
+	color: rgba(51, 40, 57, 0.7);
+}
+
 
 .ballot-page__form > h2 {
 	margin: 0;
