@@ -75,24 +75,23 @@
 
 				@if (survey().questions.length > 0) {
 					<div class="ballot-form__footer">
-						<div class="publish-actions">
-							<button class="button" type="submit" [disabled]="isSubmitting() || hasSubmittedVote()">
-								Submit <img src="/icons/check.svg" alt="" />
-							</button>
-							@if (isSubmitOverlayVisible()) {
-								<aside class="publish-overlay" aria-live="polite" aria-label="Vote submitted">
-									<h4 class="publish-overlay__title">Your vote has been submitted</h4>
-									<button
-										class="publish-overlay__close-button"
-										type="button"
-										aria-label="Close vote confirmation"
-										(click)="closeSubmitOverlay()"
-									>
-										<img class="publish-overlay__close-icon" src="/icons/close_dark.svg" alt="" />
-									</button>
-								</aside>
-							}
-						</div>
+						@if (isValidationOverlayVisible()) {
+							<aside class="publish-overlay publish-overlay--error" aria-live="assertive" aria-label="Missing answers">
+								<h4 class="publish-overlay__title publish-overlay__title--error">{{ validationOverlayMessage() }}</h4>
+								<button
+									class="publish-overlay__close-button"
+									type="button"
+									aria-label="Close validation message"
+									(click)="closeValidationOverlay()"
+								>
+									<img class="publish-overlay__close-icon" src="/icons/close_dark.svg" alt="" />
+								</button>
+							</aside>
+						}
+
+						<button class="button" type="submit" [disabled]="isSubmitting()">
+							Submit <img src="/icons/check.svg" alt="" />
+						</button>
 					</div>
 				}
 

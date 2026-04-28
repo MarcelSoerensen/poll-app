@@ -60,6 +60,7 @@
 	padding: 40px 54px;
 	background-color: rgba(241, 238, 244, 1);
 	border-radius: 0 100px 0 0;
+	overflow: hidden;
 }
 
 .ballot-header {
@@ -147,22 +148,26 @@
 .ballot-form__footer {
 	grid-column: 1 / -1;
 	display: flex;
+	position: relative;
 	justify-content: flex-end;
+	width: 100%;
+	align-items: flex-end;
+	gap: 1.5rem;
 	margin-top: 1rem;
 }
 
-.publish-actions {
+.ballot-form__footer > .button {
+	margin-left: auto;
 	position: relative;
-	display: inline-flex;
-	align-items: flex-end;
+	z-index: 1;
 }
 
 .publish-overlay {
 	position: absolute;
-	right: 150px;
+	left: 0;
 	bottom: 0;
-	z-index: 20;
-	width: min(300px, calc(100vw - 190px));
+	width: min(320px, calc(100% - 11rem));
+	min-width: 0;
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
@@ -170,17 +175,23 @@
 	padding: 1.25rem 1.75rem;
 	box-sizing: border-box;
 	border-radius: 5px 50px 5px 5px;
-	background-color: rgba(241, 210, 173, 1);
 	animation: publish-overlay-slide-in 0.35s ease-out;
+}
+
+.publish-overlay--error {
+	background-color: rgba(229, 149, 149, 1);
 }
 
 .publish-overlay__title {
 	margin: 0;
-	color: rgba(32, 19, 38, 1);
 	font-family: 'Nerko One', sans-serif;
 	font-size: 1.8rem;
 	font-weight: 400;
 	line-height: 1.1;
+}
+
+.publish-overlay__title--error {
+	color: rgba(141, 29, 29, 1);
 }
 
 .publish-overlay__close-button {
@@ -203,7 +214,7 @@
 
 .publish-overlay__close-button:hover,
 .publish-overlay__close-button:focus-visible {
-	background-color: rgba(32, 19, 38, 0.12);
+	background-color: rgba(141, 29, 29, 0.14);
 	transform: translateY(-1px);
 }
 
@@ -214,14 +225,14 @@
 }
 
 .publish-overlay__close-button:focus-visible {
-	outline: 2px solid rgba(51, 40, 57, 1);
+	outline: 2px solid rgba(141, 29, 29, 1);
 	outline-offset: 4px;
 	border-radius: 999px;
 }
 
 @keyframes publish-overlay-slide-in {
 	from {
-		transform: translateX(calc(100% + 150px));
+		transform: translateX(calc(100% + 24rem));
 		opacity: 0;
 	}
 

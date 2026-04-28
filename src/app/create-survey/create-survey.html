@@ -161,6 +161,20 @@
       <div class="footer-wrapper">
         <div></div>
         <div class="publish-actions">
+          @if (isValidationOverlayVisible()) {
+            <aside class="publish-overlay publish-overlay--error" aria-live="assertive" aria-label="Missing required fields">
+              <h4 class="publish-overlay__title publish-overlay__title--error">Please complete the highlighted required fields.</h4>
+              <button
+                class="publish-overlay__close-button"
+                type="button"
+                aria-label="Close validation message"
+                (click)="closeValidationOverlay()"
+              >
+                <img class="publish-overlay__close-icon" src="/icons/close_dark.svg" alt="" />
+              </button>
+            </aside>
+          }
+
           <button class="button" type="button" [disabled]="isPublishing() || lastPublishedSurveyId() !== null" (click)="publishSurvey()">
             Publish <img src="/icons/check.svg" alt="" />
           </button>
@@ -179,9 +193,6 @@
           }
         </div>
       </div>
-      @if (validationMessage()) {
-        <p class="publish-message publish-message--error">{{ validationMessage() }}</p>
-      }
       @if (publishError()) {
         <p class="publish-message publish-message--error">{{ publishError() }}</p>
       }

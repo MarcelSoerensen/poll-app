@@ -79,10 +79,10 @@ export class CreateSurvey {
   readonly minimumEndDate = getTomorrowIsoDate();
   readonly hasAttemptedPublish = signal(false);
   readonly validationState = signal<SurveyValidationState>(createValidationState());
-  readonly validationMessage = signal<string | null>(null);
   readonly publishError = signal<string | null>(null);
   readonly lastPublishedSurveyId = signal<number | null>(null);
   readonly isPublishOverlayVisible = signal(false);
+  readonly isValidationOverlayVisible = signal(false);
 
   toggleCategoryDropdown(): void {
     this.isCategoryDropdownOpen.update((isOpen) => !isOpen);
@@ -91,16 +91,19 @@ export class CreateSurvey {
   updateTitle(event: Event): void {
     const title = (event.target as HTMLInputElement).value;
     this.survey.update((survey) => ({ ...survey, title }));
+    this.hideValidationOverlay();
     this.refreshValidationStateIfNeeded();
   }
 
   clearTitle(): void {
     this.survey.update((survey) => ({ ...survey, title: '' }));
+    this.hideValidationOverlay();
     this.refreshValidationStateIfNeeded();
   }
 
   updateEndDate(event: Event): void {
     const endDate = (event.target as HTMLInputElement).value;
+    this.hideValidationOverlay();
 
     if (!endDate || endDate >= this.minimumEndDate) {
       this.survey.update((survey) => ({ ...survey, endDate }));
@@ -112,24 +115,29 @@ export class CreateSurvey {
 
   clearEndDate(): void {
     this.survey.update((survey) => ({ ...survey, endDate: '' }));
+    this.hideValidationOverlay();
   }
 
   selectCategory(category: string): void {
     this.survey.update((survey) => ({ ...survey, category }));
     this.isCategoryDropdownOpen.set(false);
+    this.hideValidationOverlay();
   }
 
   clearCategory(): void {
     this.survey.update((survey) => ({ ...survey, category: null }));
+    this.hideValidationOverlay();
   }
 
   updateDescription(event: Event): void {
     const description = (event.target as HTMLTextAreaElement).value;
     this.survey.update((survey) => ({ ...survey, description }));
+    this.hideValidationOverlay();
   }
 
   clearDescription(): void {
     this.survey.update((survey) => ({ ...survey, description: '' }));
+    this.hideValidationOverlay();
   }
 
   addQuestion(): void {
@@ -140,6 +148,7 @@ export class CreateSurvey {
       questions: [...survey.questions, createSurveyQuestion(nextId)],
     }));
     this.nextQuestionId.set(nextId + 1);
+    this.hideValidationOverlay();
     this.refreshValidationStateIfNeeded();
   }
 
@@ -150,6 +159,7 @@ export class CreateSurvey {
         question.id === updatedQuestion.id ? updatedQuestion : question,
       ),
     }));
+    this.hideValidationOverlay();
     this.refreshValidationStateIfNeeded();
   }
 
@@ -158,6 +168,7 @@ export class CreateSurvey {
       ...survey,
       questions: survey.questions.filter((question) => question.id !== questionId),
     }));
+    this.hideValidationOverlay();
     this.refreshValidationStateIfNeeded();
   }
 
@@ -171,9 +182,9 @@ export class CreateSurvey {
 
     if (!isValid) {
       this.isPublishOverlayVisible.set(false);
+      this.isValidationOverlayVisible.set(true);
       this.lastPublishedSurveyId.set(null);
       this.publishError.set(null);
-      this.validationMessage.set('Please complete the highlighted required fields.');
       return;
     }
 
@@ -181,9 +192,9 @@ export class CreateSurvey {
     const title = survey.title.trim();
 
     this.isPublishing.set(true);
-    this.validationMessage.set(null);
     this.publishError.set(null);
     this.isPublishOverlayVisible.set(false);
+    this.isValidationOverlayVisible.set(false);
     this.lastPublishedSurveyId.set(null);
 
     try {
@@ -200,7 +211,7 @@ export class CreateSurvey {
       this.lastPublishedSurveyId.set(surveyId);
       this.isPublishOverlayVisible.set(true);
     } catch (error: unknown) {
-      this.publishError.set(error instanceof Error ? error.message : 'Unbekannter Fehler beim Speichern.');
+      this.publishError.set(error instanceof Error ? error.message : 'Unknown error while saving the survey.');
     } finally {
       this.isPublishing.set(false);
     }
@@ -215,6 +226,10 @@ export class CreateSurvey {
 
     this.isPublishOverlayVisible.set(false);
     await this.router.navigate(['/ballot', surveyId]);
+  }
+
+  closeValidationOverlay(): void {
+    this.isValidationOverlayVisible.set(false);
   }
 
   isTitleInvalid(): boolean {
@@ -237,8 +252,11 @@ export class CreateSurvey {
       return;
     }
 
-    const isValid = this.refreshValidationState();
-    this.validationMessage.set(isValid ? null : 'Please complete the highlighted required fields.');
+    this.refreshValidationState();
+  }
+
+  private hideValidationOverlay(): void {
+    this.isValidationOverlayVisible.set(false);
   }
 
   private refreshValidationState(): boolean {

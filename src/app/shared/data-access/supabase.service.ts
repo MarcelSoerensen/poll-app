@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { createClient, type RealtimeChannel, type SupabaseClient } from '@supabase/supabase-js';
 
 import { type SurveyQuestion } from '../../create-survey/question-item/question-item.model';
 
@@ -75,6 +75,34 @@ const SUPABASE_ANON_KEY = 'sb_publishable_RvFbEYHQ8TW62i6YKTU5Jw_Zl-JE8zG';
 })
 export class SupabaseService {
   private readonly client: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  subscribeToSurveySubmissionChanges(surveyId: number, onChange: () => void): RealtimeChannel {
+    this.ensureConfigured();
+
+    return this.client
+      .channel(`survey-submissions-${surveyId}-${Date.now()}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'submissions',
+          filter: `survey_id=eq.${surveyId}`,
+        },
+        () => {
+          onChange();
+        },
+      )
+      .subscribe();
+  }
+
+  unsubscribeChannel(channel: RealtimeChannel | null): void {
+    if (!channel) {
+      return;
+    }
+
+    void this.client.removeChannel(channel);
+  }
 
   async loadSurveys(): Promise<SurveyRow[]> {
     this.ensureConfigured();
@@ -297,7 +325,7 @@ export class SupabaseService {
 
     if (hasPlaceholderConfig) {
       throw new Error(
-        'Supabase ist noch nicht konfiguriert. Trage URL und Anon Key in src/app/shared/data-access/supabase.service.ts ein.',
+        'Supabase is not configured yet. Add URL and anon key in src/app/shared/data-access/supabase.service.ts.',
       );
     }
   }

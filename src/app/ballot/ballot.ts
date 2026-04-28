@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { type RealtimeChannel } from '@supabase/supabase-js';
 
-import { type AnswerRow, type QuestionRow, SupabaseService } from '../shared/data-access/supabase.service';
+import { type AnswerRow, type SubmissionAnswerRow, SupabaseService } from '../shared/data-access/supabase.service';
 import { type SurveyQuestion } from '../create-survey/question-item/question-item.model';
 
 interface SurveyData {
@@ -36,14 +37,17 @@ function createEmptySurvey(): SurveyData {
 })
 export class Ballot {
   readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly supabaseService = inject(SupabaseService);
   private readonly sessionStorageKey = 'poll-app-session-id';
+  private voteChangesChannel: RealtimeChannel | null = null;
+  private realtimeRefreshTimer: ReturnType<typeof setTimeout> | null = null;
 
   readonly survey = signal<SurveyData>(createEmptySurvey());
   readonly surveyId = signal<number | null>(null);
 
-  readonly results = signal<QuestionResult[]>([]);
+  readonly persistedVotes = signal<SubmissionAnswerRow[]>([]);
   readonly answerIdsByQuestion = signal<Map<number, number[]>>(new Map());
 
   readonly selectedAnswers = signal<Map<number, Set<number>>>(new Map());
@@ -51,8 +55,8 @@ export class Ballot {
   readonly loadError = signal<string | null>(null);
   readonly isSubmitting = signal(false);
   readonly submitError = signal<string | null>(null);
-  readonly hasSubmittedVote = signal(false);
-  readonly isSubmitOverlayVisible = signal(false);
+  readonly isValidationOverlayVisible = signal(false);
+  readonly validationOverlayMessage = signal('Please answer every question before submitting.');
 
   readonly formattedEndDate = computed(() => {
     const endDate = this.survey().endDate;
@@ -61,7 +65,44 @@ export class Ballot {
     return `${day}.${month}.${year}`;
   });
 
+  readonly previewResults = computed(() => {
+    const surveyQuestions = this.survey().questions;
+    const answerIdsByQuestion = this.answerIdsByQuestion();
+    const baseVotes = this.persistedVotes();
+
+    const previewVotes = [...baseVotes];
+    const selectedAnswers = this.selectedAnswers();
+
+    for (const question of surveyQuestions) {
+      const selectedIndexes = selectedAnswers.get(question.id);
+      const answerIds = answerIdsByQuestion.get(question.id) ?? [];
+
+      if (!selectedIndexes) {
+        continue;
+      }
+
+      selectedIndexes.forEach((answerIndex) => {
+        const answerId = answerIds[answerIndex];
+
+        if (answerId) {
+          previewVotes.push({
+            question_id: question.id,
+            answer_id: answerId,
+          });
+        }
+      });
+    }
+
+    return this.calculateQuestionResults(surveyQuestions, answerIdsByQuestion, previewVotes);
+  });
+
   constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.clearRealtimeRefreshTimer();
+      this.supabaseService.unsubscribeChannel(this.voteChangesChannel);
+      this.voteChangesChannel = null;
+    });
+
     void this.loadSurvey();
   }
 
@@ -70,7 +111,7 @@ export class Ballot {
   }
 
   getAnswerPercentage(questionId: number, answerIndex: number): number {
-    return this.results().find((r) => r.questionId === questionId)?.answerPercentages[answerIndex] ?? 0;
+    return this.previewResults().find((result) => result.questionId === questionId)?.answerPercentages[answerIndex] ?? 0;
   }
 
   isAnswerSelected(questionId: number, answerIndex: number): boolean {
@@ -78,6 +119,8 @@ export class Ballot {
   }
 
   toggleAnswer(question: SurveyQuestion, answerIndex: number): void {
+    this.isValidationOverlayVisible.set(false);
+
     this.selectedAnswers.update((map) => {
       const next = new Map(map);
       const selected = new Set(next.get(question.id) ?? []);
@@ -111,76 +154,44 @@ export class Ballot {
     const surveyId = this.surveyId();
 
     if (!surveyId) {
-      this.submitError.set('Survey konnte nicht geladen werden.');
-      this.isSubmitOverlayVisible.set(false);
-      return;
-    }
-
-    if (this.hasSubmittedVote()) {
+      this.submitError.set('Survey could not be loaded.');
       return;
     }
 
     const survey = this.survey();
     const selectedAnswers = this.selectedAnswers();
-
-    for (const question of survey.questions) {
-      if ((selectedAnswers.get(question.id)?.size ?? 0) === 0) {
-        this.submitError.set('Please answer every question before submitting.');
-        this.isSubmitOverlayVisible.set(false);
-        return;
-      }
-    }
-
     const answerIdsByQuestion = this.answerIdsByQuestion();
-    const payload: Array<{ questionId: number; answerId: number }> = [];
+    const payload = this.buildSubmissionPayload(survey.questions, selectedAnswers, answerIdsByQuestion);
 
-    for (const question of survey.questions) {
-      const selectedIndexes = selectedAnswers.get(question.id);
-      const answerIds = answerIdsByQuestion.get(question.id) ?? [];
-
-      if (!selectedIndexes) {
-        continue;
-      }
-
-      selectedIndexes.forEach((answerIndex) => {
-        const answerId = answerIds[answerIndex];
-
-        if (answerId) {
-          payload.push({ questionId: question.id, answerId });
-        }
-      });
-    }
-
-    if (payload.length === 0) {
-      this.submitError.set('No valid answers selected.');
-      this.isSubmitOverlayVisible.set(false);
+    if (payload === null) {
+      this.submitError.set(null);
+      this.validationOverlayMessage.set('Please answer every question before submitting.');
+      this.isValidationOverlayVisible.set(true);
       return;
     }
 
     this.isSubmitting.set(true);
     this.submitError.set(null);
-    this.isSubmitOverlayVisible.set(false);
+    this.isValidationOverlayVisible.set(false);
 
     try {
       const sessionId = this.getOrCreateSessionId();
       const submissionId = await this.supabaseService.createSubmission(surveyId, sessionId);
       await this.supabaseService.createSubmissionAnswers(submissionId, payload);
-      await this.refreshResults(surveyId, this.survey().questions);
+      await this.refreshResults(surveyId);
 
-      this.hasSubmittedVote.set(true);
-      this.isSubmitOverlayVisible.set(true);
       this.selectedAnswers.set(new Map());
+      await this.router.navigate(['/main-page']);
     } catch (error: unknown) {
-      this.submitError.set(error instanceof Error ? error.message : 'Unbekannter Fehler beim Abstimmen.');
-      this.isSubmitOverlayVisible.set(false);
+      this.submitError.set(error instanceof Error ? error.message : 'Unknown error while submitting the vote.');
+      this.isValidationOverlayVisible.set(false);
     } finally {
       this.isSubmitting.set(false);
     }
   }
 
-  async closeSubmitOverlay(): Promise<void> {
-    this.isSubmitOverlayVisible.set(false);
-    await this.router.navigate(['/main-page']);
+  closeValidationOverlay(): void {
+    this.isValidationOverlayVisible.set(false);
   }
 
   private async loadSurvey(): Promise<void> {
@@ -193,7 +204,7 @@ export class Ballot {
       const survey = await this.supabaseService.loadSurveyById(ballotId);
 
       if (!survey) {
-        this.loadError.set('Survey wurde nicht gefunden.');
+        this.loadError.set('Survey was not found.');
         this.survey.set(createEmptySurvey());
         return;
       }
@@ -220,9 +231,10 @@ export class Ballot {
         })),
       });
       this.answerIdsByQuestion.set(answerIdsByQuestion);
-      await this.refreshResults(survey.id, this.survey().questions);
+      await this.refreshResults(survey.id);
+      this.startVoteResultsRealtimeSync(survey.id);
     } catch (error: unknown) {
-      this.loadError.set(error instanceof Error ? error.message : 'Unbekannter Fehler beim Laden des Surveys.');
+      this.loadError.set(error instanceof Error ? error.message : 'Unknown error while loading the survey.');
       this.survey.set(createEmptySurvey());
       this.surveyId.set(null);
     } finally {
@@ -259,10 +271,74 @@ export class Ballot {
     return answerIdsByQuestion;
   }
 
-  private async refreshResults(surveyId: number, questions: SurveyQuestion[]): Promise<void> {
+  private async refreshResults(surveyId: number): Promise<void> {
     const votes = await this.supabaseService.loadSubmissionAnswersForSurvey(surveyId);
-    const answerIdsByQuestion = this.answerIdsByQuestion();
+    this.persistedVotes.set(votes);
+  }
 
+  private startVoteResultsRealtimeSync(surveyId: number): void {
+    this.supabaseService.unsubscribeChannel(this.voteChangesChannel);
+
+    this.voteChangesChannel = this.supabaseService.subscribeToSurveySubmissionChanges(surveyId, () => {
+      this.scheduleRealtimeRefresh();
+    });
+  }
+
+  private scheduleRealtimeRefresh(): void {
+    const surveyId = this.surveyId();
+
+    if (!surveyId) {
+      return;
+    }
+
+    this.clearRealtimeRefreshTimer();
+    this.realtimeRefreshTimer = setTimeout(() => {
+      this.realtimeRefreshTimer = null;
+      void this.refreshResults(surveyId);
+    }, 150);
+  }
+
+  private clearRealtimeRefreshTimer(): void {
+    if (this.realtimeRefreshTimer === null) {
+      return;
+    }
+
+    clearTimeout(this.realtimeRefreshTimer);
+    this.realtimeRefreshTimer = null;
+  }
+
+  private buildSubmissionPayload(
+    questions: SurveyQuestion[],
+    selectedAnswers: Map<number, Set<number>>,
+    answerIdsByQuestion: Map<number, number[]>,
+  ): Array<{ questionId: number; answerId: number }> | null {
+    const payload: Array<{ questionId: number; answerId: number }> = [];
+
+    for (const question of questions) {
+      const selectedIndexes = selectedAnswers.get(question.id);
+      const answerIds = answerIdsByQuestion.get(question.id) ?? [];
+
+      if (!selectedIndexes || selectedIndexes.size === 0) {
+        return null;
+      }
+
+      selectedIndexes.forEach((answerIndex) => {
+        const answerId = answerIds[answerIndex];
+
+        if (answerId) {
+          payload.push({ questionId: question.id, answerId });
+        }
+      });
+    }
+
+    return payload;
+  }
+
+  private calculateQuestionResults(
+    questions: SurveyQuestion[],
+    answerIdsByQuestion: Map<number, number[]>,
+    votes: SubmissionAnswerRow[],
+  ): QuestionResult[] {
     const questionResults: QuestionResult[] = questions.map((question) => {
       const answerIds = answerIdsByQuestion.get(question.id) ?? [];
       const counts = new Array<number>(answerIds.length).fill(0);
@@ -289,7 +365,7 @@ export class Ballot {
       };
     });
 
-    this.results.set(questionResults);
+    return questionResults;
   }
 
   private getOrCreateSessionId(): string {

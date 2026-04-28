@@ -121,7 +121,7 @@ export class SurveysOverview {
       const rows = await this.supabaseService.loadSurveys();
       this.surveys.set(rows.map((row) => this.mapSurveyRow(row)));
     } catch (error: unknown) {
-      this.loadError.set(error instanceof Error ? error.message : 'Unbekannter Fehler beim Laden der Surveys.');
+      this.loadError.set(error instanceof Error ? error.message : 'Unknown error while loading surveys.');
     } finally {
       this.isLoading.set(false);
     }
