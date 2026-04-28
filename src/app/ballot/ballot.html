@@ -33,7 +33,7 @@
 				<p class="ballot-page__message">Loading survey...</p>
 			}
 
-			<form class="ballot-questions-grid" (submit)="$event.preventDefault()">
+			<form class="ballot-questions-grid" (submit)="submitVote($event)">
 				@for (question of survey().questions; track question.id) {
 					<div class="ballot-question">
 						<p class="ballot-question__title">{{ $index + 1 }}. {{ question.prompt }}</p>
@@ -75,10 +75,29 @@
 
 				@if (survey().questions.length > 0) {
 					<div class="ballot-form__footer">
-						<button class="button" type="submit">
-							Submit <img src="/icons/check.svg" alt="" />
-						</button>
+						<div class="publish-actions">
+							<button class="button" type="submit" [disabled]="isSubmitting() || hasSubmittedVote()">
+								Submit <img src="/icons/check.svg" alt="" />
+							</button>
+							@if (isSubmitOverlayVisible()) {
+								<aside class="publish-overlay" aria-live="polite" aria-label="Vote submitted">
+									<h4 class="publish-overlay__title">Your vote has been submitted</h4>
+									<button
+										class="publish-overlay__close-button"
+										type="button"
+										aria-label="Close vote confirmation"
+										(click)="closeSubmitOverlay()"
+									>
+										<img class="publish-overlay__close-icon" src="/icons/close_dark.svg" alt="" />
+									</button>
+								</aside>
+							}
+						</div>
 					</div>
+				}
+
+				@if (submitError()) {
+					<p class="ballot-page__message ballot-page__message--error">{{ submitError() }}</p>
 				}
 			</form>
 		</div>

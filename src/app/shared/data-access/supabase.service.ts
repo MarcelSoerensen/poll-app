@@ -19,7 +19,7 @@ interface CreateSurveyPayload {
   end_date: string | null;
 }
 
-interface QuestionRow {
+export interface QuestionRow {
   id: number;
   survey_id: number;
   question_order: number;
@@ -27,11 +27,20 @@ interface QuestionRow {
   allow_multiple_answers: boolean;
 }
 
-interface AnswerRow {
+export interface AnswerRow {
   id: number;
   question_id: number;
   answer_order: number;
   answer_text: string;
+}
+
+interface SubmissionRow {
+  id: number;
+}
+
+interface CreateSubmissionPayload {
+  survey_id: number;
+  session_id: string;
 }
 
 interface CreateQuestionPayload {
@@ -45,6 +54,17 @@ interface CreateAnswerPayload {
   question_id: number;
   answer_order: number;
   answer_text: string;
+}
+
+interface CreateSubmissionAnswerPayload {
+  submission_id: number;
+  question_id: number;
+  answer_id: number;
+}
+
+export interface SubmissionAnswerRow {
+  question_id: number;
+  answer_id: number;
 }
 
 const SUPABASE_URL = 'https://gwlfmkwbppsyvxdmefpd.supabase.co';
@@ -192,6 +212,83 @@ export class SupabaseService {
     if (error) {
       throw new Error(error.message);
     }
+  }
+
+  async createSubmission(surveyId: number, sessionId: string): Promise<number> {
+    this.ensureConfigured();
+
+    const payload: CreateSubmissionPayload = {
+      survey_id: surveyId,
+      session_id: sessionId,
+    };
+
+    const { data, error } = await this.client
+      .from('submissions')
+      .insert(payload)
+      .select('id')
+      .single<SubmissionRow>();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data.id;
+  }
+
+  async createSubmissionAnswers(
+    submissionId: number,
+    selectedAnswers: Array<{ questionId: number; answerId: number }>,
+  ): Promise<void> {
+    this.ensureConfigured();
+
+    if (selectedAnswers.length === 0) {
+      return;
+    }
+
+    const payload: CreateSubmissionAnswerPayload[] = selectedAnswers.map((selectedAnswer) => ({
+      submission_id: submissionId,
+      question_id: selectedAnswer.questionId,
+      answer_id: selectedAnswer.answerId,
+    }));
+
+    const { error } = await this.client.from('submission_answers').insert(payload);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async loadSubmissionAnswersForSurvey(surveyId: number): Promise<SubmissionAnswerRow[]> {
+    this.ensureConfigured();
+
+    const { data: submissions, error: submissionsError } = await this.client
+      .from('submissions')
+      .select('id')
+      .eq('survey_id', surveyId);
+
+    if (submissionsError) {
+      throw new Error(submissionsError.message);
+    }
+
+    const submissionIds = submissions.map((submission) => submission.id);
+
+    if (submissionIds.length === 0) {
+      return [];
+    }
+
+    const { data, error } = await this.client
+      .from('submission_answers')
+      .select('question_id, answer_id')
+      .in('submission_id', submissionIds);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data.map((row) => ({
+      question_id: row.question_id,
+      answer_id: row.answer_id,
+    })) satisfies SubmissionAnswerRow[];
   }
 
   private ensureConfigured(): void {

@@ -162,7 +162,7 @@ export class CreateSurvey {
   }
 
   async publishSurvey(): Promise<void> {
-    if (this.isPublishing()) {
+    if (this.isPublishing() || this.lastPublishedSurveyId() !== null) {
       return;
     }
 
