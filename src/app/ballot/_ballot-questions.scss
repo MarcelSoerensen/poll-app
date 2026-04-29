@@ -1,0 +1,80 @@
+.ballot-question__title {
+	margin: 0 0 0.5rem;
+	font-size: 1rem;
+	font-weight: 600;
+	color: rgba(51, 40, 57, 1);
+}
+
+.ballot-question__multiple-hint {
+	margin: 0 0 0.75rem;
+	font-size: 0.85rem;
+	font-weight: 300;
+	color: rgba(51, 40, 57, 0.75);
+}
+
+.ballot-question__answers {
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+}
+
+.ballot-question__answer {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	border: 0;
+	background: transparent;
+	padding: 0.35rem 0.45rem;
+	cursor: pointer;
+	font-family: 'Mulish', sans-serif;
+	font-size: 0.95rem;
+	font-weight: 400;
+	color: rgba(51, 40, 57, 1);
+	text-align: left;
+	border-radius: 0.4rem;
+
+	&:hover {
+		background-color: rgba(242, 222, 206, 1);
+	}
+
+	&:focus-visible {
+		outline: 2px solid rgba(244, 186, 123, 1);
+		outline-offset: 3px;
+		border-radius: 4px;
+	}
+}
+
+.ballot-question__checkbox-wrapper {
+	display: inline-grid;
+	flex-shrink: 0;
+}
+
+.ballot-question__checkbox {
+	grid-area: 1 / 1;
+	display: block;
+	transition: opacity 0.15s;
+}
+
+.ballot-question__checkbox--checked {
+	opacity: 0;
+}
+
+.ballot-question__answer--selected {
+	.ballot-question__checkbox--default {
+		opacity: 0;
+	}
+
+	.ballot-question__checkbox--checked {
+		opacity: 1;
+	}
+}
+
+.ballot-question__answer-label {
+	min-width: 1.5rem;
+	flex-shrink: 0;
+	color: rgba(51, 40, 57, 0.75);
+}
+
+.ballot-question__answer-text {
+	color: rgba(51, 40, 57, 1);
+}

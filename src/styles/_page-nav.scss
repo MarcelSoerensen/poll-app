@@ -1,0 +1,35 @@
+.page-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 6%;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(2px);
+}
+
+.page-nav__logo {
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:active {
+    opacity: 1;
+  }
+}
+
+.page-nav--responsive {
+  justify-content: flex-start;
+}
+
+@media (width > 1030px) {
+  .page-nav--responsive {
+    display: none !important;
+  }
+}

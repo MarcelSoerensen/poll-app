@@ -1,0 +1,142 @@
+.publish-actions {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-end;
+}
+
+.publish-message {
+  margin: 1rem 0 0;
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.95rem;
+}
+
+.publish-message--error {
+  color: rgba(255, 147, 147, 1);
+}
+
+.publish-overlay {
+  position: absolute;
+  right: 150px;
+  bottom: 0;
+  z-index: 20;
+  width: min(300px, calc(100vw - 190px));
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.75rem;
+  box-sizing: border-box;
+  border-radius: 5px 50px 5px 5px;
+  background-color: rgba(250, 234, 214, 1);
+  animation: publish-overlay-slide-in 0.35s ease-out;
+}
+
+.publish-overlay--error {
+  background-color: rgba(229, 149, 149, 1);
+}
+
+.publish-overlay__title {
+  margin: 0;
+  color: rgba(32, 19, 38, 1);
+  font-family: 'Nerko One', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.publish-overlay__title--error {
+  color: rgba(141, 29, 29, 1);
+}
+
+.publish-overlay__close-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  padding: 0.25rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.publish-overlay__close-icon {
+  display: block;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.publish-overlay__close-button:hover,
+.publish-overlay__close-button:focus-visible {
+  background-color: rgba(32, 19, 38, 0.12);
+  transform: translateY(-1px);
+}
+
+.publish-overlay--error .publish-overlay__close-button:hover,
+.publish-overlay--error .publish-overlay__close-button:focus-visible {
+  background-color: rgba(141, 29, 29, 0.14);
+}
+
+.publish-overlay__close-button:hover .publish-overlay__close-icon,
+.publish-overlay__close-button:focus-visible .publish-overlay__close-icon {
+  transform: rotate(90deg);
+  opacity: 0.9;
+}
+
+.publish-overlay__close-button:focus-visible {
+  outline: 2px solid rgba(51, 40, 57, 1);
+  outline-offset: 4px;
+}
+
+.publish-overlay--error .publish-overlay__close-button:focus-visible {
+  outline-color: rgba(141, 29, 29, 1);
+}
+
+@keyframes publish-overlay-slide-in {
+  from {
+    transform: translateX(calc(100% + 150px));
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (width <= 1030px) {
+  .publish-overlay {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    animation-name: publish-overlay-slide-in-mobile;
+    width: min(90vw, 340px);
+    justify-content: center;
+    align-items: center;
+    padding: 1.25rem 0.7rem;
+  }
+
+  .publish-overlay__title {
+    text-align: center;
+  }
+
+  .publish-overlay__close-button {
+    align-self: flex-start;
+  }
+}
+
+@keyframes publish-overlay-slide-in-mobile {
+  from {
+    transform: translateX(100vw);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(-50%);
+    opacity: 1;
+  }
+}

@@ -33,10 +33,6 @@ export class QuestionItem {
     this.questionUpdated.emit({ ...this.question(), prompt });
   }
 
-  clearPrompt(): void {
-    this.questionUpdated.emit({ ...this.question(), prompt: '' });
-  }
-
   toggleMultipleAnswers(): void {
     this.questionUpdated.emit({
       ...this.question(),

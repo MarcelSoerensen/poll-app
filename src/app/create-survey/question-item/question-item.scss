@@ -1,3 +1,5 @@
+@use '../input-group';
+
 :host {
   display: block;
   min-width: 0;
@@ -151,16 +153,6 @@
   transition: background-color 0.2s;
 }
 
-.input {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.input--invalid {
-  border-color: rgba(255, 147, 147, 1);
-  box-shadow: 0 0 0 1px rgba(255, 147, 147, 1);
-}
-
 .question-item__add-answer-button {
   align-self: flex-start;
   margin-top: 0;
@@ -206,4 +198,39 @@
   font-size: 0.9rem;
   font-weight: 300;
   text-align: right;
+}
+
+@media (width <= 1030px) {
+  .question-item__answer-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    row-gap: 0.4rem;
+
+    .question-item__answer-label {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .question-item__icon-button {
+      grid-column: 2;
+      grid-row: 1;
+      align-self: center;
+    }
+
+    .input {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+  }
+
+  .question-item__add-answer-row {
+    padding-left: 0;
+  }
+}
+
+@media (width <= 900px) {
+  .question-item__add-answer-hint {
+    display: none;
+  }
 }

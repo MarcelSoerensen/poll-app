@@ -1,21 +1,42 @@
 <section id="create-survey">
+  <nav class="page-nav page-nav--responsive">
+    <img class="page-nav__logo" src="/icons/logo_dark.svg" alt="Zur Hauptseite" routerLink="/main-page" />
+  </nav>
   <div class="create-survey-page">
     <div class="create-survey-page__header">
-      <p class="status-label">Draft</p>
-      <div class="headline-wrapper">
-        <h2>Create new survey</h2>
-        <button class="basic-button" type="button" routerLink="/main-page">
-          Cancel
-          <img src="/icons/close.svg" alt="" />
+      <div class="header-row">
+        <p class="status-label">Draft</p>
+        <button class="basic-button create-survey-page__cancel header-row-cancel" type="button" routerLink="/main-page">
+          <span>Cancel</span>
+          <img src="/icons/close.svg" alt="Cancel" />
         </button>
       </div>
-      <form class="input-wrapper">
+      <div class="headline-wrapper">
+        <h2>Create new survey</h2>
+        <button class="basic-button create-survey-page__cancel headline-cancel" type="button" routerLink="/main-page">
+          <span>Cancel</span>
+          <img src="/icons/close.svg" alt="Cancel" />
+        </button>
+      </div>
+      <form>
         <div class="survey-basics">
           <div class="survey-basics__left">
             <div class="input-group__field">
               <label class="input-group__label" [class.input-group__label--invalid]="isTitleInvalid()" for="survey-title">
                 Survey name
               </label>
+              <span class="input-group__delete-icon-wrapper" (click)="clearTitle()">
+                <img
+                  class="input-group__delete-icon input-group__delete-icon--default"
+                  src="/icons/delete_default.svg"
+                  alt=""
+                />
+                <img
+                  class="input-group__delete-icon input-group__delete-icon--hover"
+                  src="/icons/delete_hover.svg"
+                  alt=""
+                />
+              </span>
               <div class="input-group__control">
                 <input
                   id="survey-title"
@@ -27,7 +48,15 @@
                   [attr.aria-invalid]="isTitleInvalid()"
                   (input)="updateTitle($event)"
                 />
-                <span class="input-group__delete-icon-wrapper" (click)="clearTitle()">
+              </div>
+            </div>
+
+            <div class="survey-basics__row">
+              <div class="input-group__field">
+                <label class="input-group__label" for="survey-end-date">
+                  Set end date <span class="input-group__optional">(optional)</span>
+                </label>
+                <span class="input-group__delete-icon-wrapper" (click)="clearEndDate()">
                   <img
                     class="input-group__delete-icon input-group__delete-icon--default"
                     src="/icons/delete_default.svg"
@@ -39,14 +68,6 @@
                     alt=""
                   />
                 </span>
-              </div>
-            </div>
-
-            <div class="survey-basics__row">
-              <div class="input-group__field">
-                <label class="input-group__label" for="survey-end-date">
-                  Set end date <span class="input-group__optional">(optional)</span>
-                </label>
                 <div class="input-group__control">
                   <input
                     id="survey-end-date"
@@ -56,18 +77,6 @@
                     [value]="survey().endDate"
                     (input)="updateEndDate($event)"
                   />
-                  <span class="input-group__delete-icon-wrapper" (click)="clearEndDate()">
-                    <img
-                      class="input-group__delete-icon input-group__delete-icon--default"
-                      src="/icons/delete_default.svg"
-                      alt=""
-                    />
-                    <img
-                      class="input-group__delete-icon input-group__delete-icon--hover"
-                      src="/icons/delete_hover.svg"
-                      alt=""
-                    />
-                  </span>
                 </div>
               </div>
 
@@ -113,6 +122,18 @@
               <label class="input-group__label" for="survey-description">
                 Survey description <span class="input-group__optional">(optional)</span>
               </label>
+              <span class="input-group__delete-icon-wrapper" (click)="clearDescription()">
+                <img
+                  class="input-group__delete-icon input-group__delete-icon--default"
+                  src="/icons/delete_default.svg"
+                  alt=""
+                />
+                <img
+                  class="input-group__delete-icon input-group__delete-icon--hover"
+                  src="/icons/delete_hover.svg"
+                  alt=""
+                />
+              </span>
               <div class="input-group__control input-group__control--textarea">
                 <textarea
                   id="survey-description"
@@ -121,18 +142,6 @@
                   [value]="survey().description"
                   (input)="updateDescription($event)"
                 ></textarea>
-                <span class="input-group__delete-icon-wrapper" (click)="clearDescription()">
-                  <img
-                    class="input-group__delete-icon input-group__delete-icon--default"
-                    src="/icons/delete_default.svg"
-                    alt=""
-                  />
-                  <img
-                    class="input-group__delete-icon input-group__delete-icon--hover"
-                    src="/icons/delete_hover.svg"
-                    alt=""
-                  />
-                </span>
               </div>
             </div>
           </div>

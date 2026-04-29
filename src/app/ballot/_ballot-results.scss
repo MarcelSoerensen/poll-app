@@ -1,0 +1,75 @@
+.ballot-page__results {
+	margin-top: 5rem;
+	flex: 0 0 25%;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	padding: 40px 40px 40px 36px;
+	background-color: transparent;
+}
+
+.ballot-results__title {
+	margin: 0 0 2rem;
+	color: rgba(32, 19, 38, 1);
+	font-size: 2rem;
+}
+
+.ballot-results__title-live {
+	color: rgba(244, 186, 123, 1);
+}
+
+.ballot-results__list {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
+.ballot-results__question-title {
+	margin: 0 0 0.75rem;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: rgba(51, 40, 57, 1);
+}
+
+.ballot-results__answers {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+}
+
+.ballot-results__answer-row {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+}
+
+.ballot-results__answer-label {
+	min-width: 1.5rem;
+	flex-shrink: 0;
+	font-size: 0.9rem;
+	color: rgba(51, 40, 57, 0.75);
+}
+
+.ballot-results__bar-track {
+	flex: 1;
+	height: 0.65rem;
+	border-radius: 999px;
+	background-color: rgba(237, 237, 237, 1);
+	overflow: hidden;
+}
+
+.ballot-results__bar-fill {
+	height: 100%;
+	border-radius: 999px;
+	background-color: rgba(244, 186, 123, 1);
+	transition: width 0.4s ease;
+}
+
+.ballot-results__percentage {
+	min-width: 2.5rem;
+	flex-shrink: 0;
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: rgba(244, 186, 123, 1);
+	text-align: right;
+}
