@@ -43,6 +43,19 @@
     }
 }
 
+@media (hover: none) {
+  .button {
+    background: rgba(244, 186, 123, 1);
+
+    img {
+      width: 1.3rem;
+      max-width: fit-content;
+      opacity: 1;
+      padding-right: 0.4rem;
+    }
+  }
+}
+
 .checkbox {
   accent-color: var(--primary, #3b82f6);
   width: 1.2em;

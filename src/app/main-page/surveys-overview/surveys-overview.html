@@ -8,7 +8,7 @@
     } @else if (isLoading()) {
       <p class="surveys-overview__message">Loading surveys...</p>
     } @else {
-      <div class="surveys-overview__grid surveys-overview__grid--three">
+      <div class="surveys-overview__grid surveys-overview__grid--scroll">
         @for (survey of endingSoonSurveys(); track survey.id) {
           <a class="survey-preview-card survey-preview-card--light" [routerLink]="['/ballot', survey.id]" [attr.aria-label]="'Open survey ' + survey.title">
             <div class="survey-preview-card__content">
