@@ -1,3 +1,5 @@
+@use '../../../styles/category-dropdown';
+
 :host {
   display: block;
 }
@@ -44,16 +46,8 @@
   align-items: start;
 }
 
-.surveys-overview__grid--three,
 .surveys-overview__grid--two {
   gap: 1.5rem;
-}
-
-.surveys-overview__grid--three {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.surveys-overview__grid--two {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -106,92 +100,10 @@
 }
 
 .category-dropdown {
-  width: min(320px, 100%);
-  position: relative;
-}
-
-.category-dropdown--open {
-  z-index: 2;
-}
-
-.category-dropdown__trigger {
-  --category-dropdown-arrow-color: rgba(255, 255, 255, 1);
-  width: 100%;
-  min-height: 2.625rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5em 1em;
-  border: none;
-  border-radius: 0.5rem;
-  background-color: rgba(64, 54, 70, 0);
-  color: rgba(255, 255, 255, 1);
-  font-size: 1rem;
-  font-weight: 400;
-  font-family: 'Mulish', sans-serif;
-  list-style: none;
-  cursor: pointer;
-  user-select: none;
-  box-sizing: border-box;
-}
-
-.category-dropdown__trigger::after {
-  content: '';
-  flex-shrink: 0;
-  margin-left: 0.75rem;
-  width: 0;
-  height: 0;
-  border-left: 0.45rem solid transparent;
-  border-right: 0.45rem solid transparent;
-  border-top: 0.45rem solid var(--category-dropdown-arrow-color);
-}
-
-.category-dropdown__trigger:hover,
-.category-dropdown__trigger:focus-visible {
-  background-color: rgba(77, 67, 82, 1);
-  --category-dropdown-arrow-color: rgb(244, 186, 123);
-  outline: none;
-}
-
-.category-dropdown--open .category-dropdown__trigger::after {
-  border-top: 0;
-  border-bottom: 0.45rem solid var(--category-dropdown-arrow-color);
-}
-
-.category-dropdown__menu {
-  position: absolute;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  margin: 8px 0;
-  padding: 0.5rem;
-  border-radius: 0.75rem;
-  background-color: rgba(255, 255, 255, 1);
-  box-sizing: border-box;
-  z-index: 1;
-  list-style: none;
-}
-
-.category-dropdown__item {
-  display: block;
-}
-
-.category-dropdown__option {
-  width: 100%;
-  border: 0;
-  background: transparent;
-  color: rgba(51, 40, 57, 1);
-  text-align: left;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-}
-
-.category-dropdown__option:hover,
-.category-dropdown__option:focus-visible {
-  background-color: rgba(244, 186, 123, 0.35);
-  outline: none;
+  --category-dropdown-width: min(320px, 100%);
+  --category-dropdown-background: rgba(64, 54, 70, 0);
+  --category-dropdown-hover-background: rgba(77, 67, 82, 1);
+  --category-dropdown-menu-shadow: none;
 }
 
 .survey-preview-card {

@@ -1,7 +1,7 @@
 <section id="ballot">
 	<nav class="page-nav">
 		<img class="page-nav__logo" src="/icons/logo_dark.svg" alt="" routerLink="/main-page" />
-		<button class="button" type="button" routerLink="/create-survey">
+		<button class="button ballot-nav__create-button" type="button" routerLink="/create-survey">
 			Create survey <img src="/icons/add_circle.svg" alt="" />
 		</button>
 	</nav>
@@ -16,9 +16,15 @@
 						<p class="ballot-header__end-date">Ends on {{ formattedEndDate() }}</p>
 					}
 				</div>
-				@if (survey().category) {
-					<p class="ballot-header__category">Category: {{ survey().category }}</p>
-				}
+				<div class="ballot-header__right">
+					@if (survey().category) {
+						<p class="ballot-header__category">Category: {{ survey().category }}</p>
+					}
+					<button class="basic-button ballot-header__close" type="button" routerLink="/main-page">
+						<span>Close</span>
+						<img src="/icons/close_dark.svg" alt="Close" />
+					</button>
+				</div>
 			</div>
 
 			<h2>{{ survey().title }}</h2>
