@@ -1,6 +1,6 @@
 <section id="create-survey">
   <nav class="page-nav page-nav--responsive">
-    <img class="page-nav__logo" src="/icons/logo_dark.svg" alt="Zur Hauptseite" routerLink="/main-page" />
+    <img class="page-nav__logo" src="/assets/icons/logo_dark.svg" alt="Zur Hauptseite" routerLink="/main-page" />
   </nav>
   <div class="create-survey-page">
     <div class="create-survey-page__header">
@@ -8,14 +8,14 @@
         <p class="status-label">Draft</p>
         <button class="basic-button create-survey-page__cancel header-row-cancel" type="button" routerLink="/main-page">
           <span>Cancel</span>
-          <img src="/icons/close.svg" alt="Cancel" />
+          <img src="/assets/icons/close.svg" alt="Cancel" />
         </button>
       </div>
       <div class="headline-wrapper">
         <h2>Create new survey</h2>
         <button class="basic-button create-survey-page__cancel headline-cancel" type="button" routerLink="/main-page">
           <span>Cancel</span>
-          <img src="/icons/close.svg" alt="Cancel" />
+          <img src="/assets/icons/close.svg" alt="Cancel" />
         </button>
       </div>
       <form>
@@ -28,12 +28,12 @@
               <span class="input-group__delete-icon-wrapper" (click)="clearTitle()">
                 <img
                   class="input-group__delete-icon input-group__delete-icon--default"
-                  src="/icons/delete_default.svg"
+                  src="/assets/icons/delete_default.svg"
                   alt=""
                 />
                 <img
                   class="input-group__delete-icon input-group__delete-icon--hover"
-                  src="/icons/delete_hover.svg"
+                  src="/assets/icons/delete_hover.svg"
                   alt=""
                 />
               </span>
@@ -59,12 +59,12 @@
                 <span class="input-group__delete-icon-wrapper" (click)="clearEndDate()">
                   <img
                     class="input-group__delete-icon input-group__delete-icon--default"
-                    src="/icons/delete_default.svg"
+                    src="/assets/icons/delete_default.svg"
                     alt=""
                   />
                   <img
                     class="input-group__delete-icon input-group__delete-icon--hover"
-                    src="/icons/delete_hover.svg"
+                    src="/assets/icons/delete_hover.svg"
                     alt=""
                   />
                 </span>
@@ -125,12 +125,12 @@
               <span class="input-group__delete-icon-wrapper" (click)="clearDescription()">
                 <img
                   class="input-group__delete-icon input-group__delete-icon--default"
-                  src="/icons/delete_default.svg"
+                  src="/assets/icons/delete_default.svg"
                   alt=""
                 />
                 <img
                   class="input-group__delete-icon input-group__delete-icon--hover"
-                  src="/icons/delete_hover.svg"
+                  src="/assets/icons/delete_hover.svg"
                   alt=""
                 />
               </span>
@@ -162,7 +162,7 @@
 
             <button class="basic-button questions-grid__add-button" type="button" (click)="addQuestion()">
               Add next Question
-              <img src="/icons/add_circle_white.svg" alt="" aria-hidden="true" />
+              <img src="/assets/icons/add_circle_white.svg" alt="" aria-hidden="true" />
             </button>
           </div>
         </section>
@@ -179,7 +179,7 @@
                 aria-label="Close validation message"
                 (click)="closeValidationOverlay()"
               >
-                <img class="publish-overlay__close-icon" src="/icons/close_dark.svg" alt="" />
+                <img class="publish-overlay__close-icon" src="/assets/icons/close_dark.svg" alt="" />
               </button>
             </aside>
           }
@@ -190,7 +190,7 @@
           [disabled]="isPublishing() || lastPublishedSurveyId() !== null || isValidationOverlayVisible() || isPublishOverlayVisible()"
           (click)="publishSurvey()"
           >
-            Publish <img src="/icons/check.svg" alt="" />
+            Publish <img src="/assets/icons/check.svg" alt="" />
           </button>
           @if (isPublishOverlayVisible()) {
             <aside class="publish-overlay" aria-live="polite" aria-label="Survey published">
@@ -201,7 +201,7 @@
                 aria-label="Open published survey"
                 (click)="openPublishedSurvey()"
               >
-                <img class="publish-overlay__close-icon" src="/icons/close_dark.svg" alt="" />
+                <img class="publish-overlay__close-icon" src="/assets/icons/close_dark.svg" alt="" />
               </button>
             </aside>
           }

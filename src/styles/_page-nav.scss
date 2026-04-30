@@ -1,8 +1,9 @@
 .page-nav {
   position: fixed;
   top: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(88vw, 1440px);
   z-index: 10;
   display: flex;
   justify-content: space-between;

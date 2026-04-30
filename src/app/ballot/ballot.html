@@ -1,8 +1,8 @@
 <section id="ballot">
 	<nav class="page-nav">
-		<img class="page-nav__logo" src="/icons/logo_dark.svg" alt="" routerLink="/main-page" />
+		<img class="page-nav__logo" src="/assets/icons/logo_dark.svg" alt="" routerLink="/main-page" />
 		<button class="button ballot-nav__create-button" type="button" routerLink="/create-survey">
-			Create survey <img src="/icons/add_circle.svg" alt="" />
+			Create survey <img src="/assets/icons/add_circle.svg" alt="" />
 		</button>
 	</nav>
 
@@ -22,7 +22,7 @@
 					}
 					<button class="basic-button ballot-header__close" type="button" routerLink="/main-page">
 						<span>Close</span>
-						<img src="/icons/close_dark.svg" alt="Close" />
+					<img src="/assets/icons/close_dark.svg" alt="Close" />
 					</button>
 				</div>
 			</div>
@@ -63,8 +63,8 @@
 									(click)="toggleAnswer(question, $index)"
 								>
 									<span class="ballot-question__checkbox-wrapper">
-										<img class="ballot-question__checkbox ballot-question__checkbox--default" src="/icons/checkbox_dark_default.svg" alt="" />
-										<img class="ballot-question__checkbox ballot-question__checkbox--checked" src="/icons/checkbox_checked.svg" alt="" />
+						<img class="ballot-question__checkbox ballot-question__checkbox--default" src="/assets/icons/checkbox_dark_default.svg" alt="" />
+						<img class="ballot-question__checkbox ballot-question__checkbox--checked" src="/assets/icons/checkbox_checked.svg" alt="" />
 									</span>
 									<span class="ballot-question__answer-label">{{ getAnswerLabel($index) }}</span>
 									<span class="ballot-question__answer-text">{{ answer }}</span>
@@ -95,7 +95,7 @@
 									aria-label="Close already voted message"
 									(click)="closeAlreadyVotedOverlay()"
 								>
-									<img class="publish-overlay__close-icon" src="/icons/close_dark.svg" alt="" />
+								<img class="publish-overlay__close-icon" src="/assets/icons/close_dark.svg" alt="" />
 								</button>
 							</aside>
 						}
@@ -109,7 +109,7 @@
 									aria-label="Close validation message"
 									(click)="closeValidationOverlay()"
 								>
-									<img class="publish-overlay__close-icon" src="/icons/close_dark.svg" alt="" />
+								<img class="publish-overlay__close-icon" src="/assets/icons/close_dark.svg" alt="" />
 								</button>
 							</aside>
 						}
@@ -119,7 +119,7 @@
 							type="submit"
 							[disabled]="isSubmitting() || hasAlreadyVoted() || isValidationOverlayVisible() || isAlreadyVotedOverlayVisible()"
 						>
-							Submit <img src="/icons/check.svg" alt="" />
+							Submit <img src="/assets/icons/check.svg" alt="" />
 						</button>
 					</div>
 					</div>

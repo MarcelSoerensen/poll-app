@@ -1,7 +1,22 @@
+<IfModule mod_mime.c>
+  AddType image/svg+xml .svg
+</IfModule>
+
+<IfModule mod_security.c>
+  SecFilterEngine Off
+  SecFilterScanPOST Off
+</IfModule>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
+  # Static assets – never rewrite, pass through directly
+  RewriteRule ^assets/.*$ - [L,NC]
+  RewriteRule ^(fonts|media)/.*$ - [L,NC]
+  RewriteRule \.(svg|js|css|woff2|woff|ttf|eot|ico|png|jpg|jpeg|gif|webp|json|map|txt)$ - [L,NC]
+
+  # Angular routing fallback
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ /index.html [L]
