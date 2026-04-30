@@ -11,9 +11,18 @@
 #create-survey {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
   box-sizing: border-box;
+}
+
+#create-survey > .legal-links {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.75rem;
 }
 
 .header-row {
@@ -31,6 +40,7 @@
   padding: 40px 54px;
   min-height: 75vh;
   width: min(1440px, clamp(88%, calc(88% + 12% * ((900px - 100vw) / 900px)), 100%));
+  box-sizing: border-box;
   margin-inline: auto;
   background-color: rgba(51, 40, 57, 1);
 
@@ -159,6 +169,6 @@
 
 @media (width <= 1030px) {
   #create-survey {
-    padding: 6.5rem 0 2rem !important;
+    padding: 6.5rem 0 4.5rem !important;
   }
 }

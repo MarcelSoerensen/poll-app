@@ -1,5 +1,6 @@
 @import 'styles/_ui';
 @import 'styles/_page-nav';
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -97,4 +98,47 @@ h2 {
   font-style: normal;
   font-weight: 900;
   src: url('/fonts/mulish-v18-latin-900.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+.legal-links {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0 1.25rem;
+}
+
+.legal-links__link {
+  color: rgba(51, 40, 57, 0.85);
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.85rem;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    color: rgba(214, 153, 88, 1);
+    text-decoration: underline;
+    outline: none;
+  }
+}
+
+.legal-links__separator {
+  color: rgba(51, 40, 57, 0.5);
+}
+
+.legal-links--on-dark {
+  .legal-links__link {
+    color: rgba(236, 219, 200, 0.95);
+  }
+
+  .legal-links__separator {
+    color: rgba(236, 219, 200, 0.65);
+  }
+}
+
+@media (width < 600px) {
+  .legal-links {
+    padding-bottom: 1rem;
+  }
 }

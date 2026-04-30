@@ -11,10 +11,19 @@
 #ballot {
 	min-height: 100vh;
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	justify-content: center;
-	padding: 6.5rem 0 2rem;
+	justify-content: flex-start;
+	position: relative;
+	padding: 6.5rem 0 0;
 	box-sizing: border-box;
+}
+
+#ballot > .legal-links {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0.75rem;
 }
 
 
@@ -248,5 +257,11 @@
 			opacity: 1;
 			padding-right: 0.4rem;
 		}
+	}
+}
+
+@media (width <= 1030px) {
+	#ballot {
+		padding-bottom: 4.5rem;
 	}
 }

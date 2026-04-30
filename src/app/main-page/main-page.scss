@@ -5,6 +5,20 @@
   overflow-x: clip;
 }
 
+#main-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+#main-page > .legal-links {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.75rem;
+}
+
 nav {
   position: fixed;
   left: 0;
