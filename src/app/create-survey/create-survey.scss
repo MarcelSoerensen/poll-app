@@ -172,3 +172,11 @@
     padding: 6.5rem 0 4.5rem !important;
   }
 }
+
+@media (width <= 900px) {
+  #create-survey .page-nav {
+    width: 100%;
+    padding-inline: 3%;
+    box-sizing: border-box;
+  }
+}

@@ -75,6 +75,10 @@
 	}
 }
 
+.ballot-nav__create-button {
+	margin-top: 0;
+}
+
 .ballot-header__left {
 	display: flex;
 	flex-direction: column;
@@ -186,6 +190,11 @@
 }
 
 @media (width <= 900px) {
+	#ballot .page-nav {
+		width: 94%;
+		padding-inline: 5%;
+	}
+
 	.ballot-page {
 		width: 94%;
 		margin-inline: auto;
