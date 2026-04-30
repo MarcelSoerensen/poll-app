@@ -184,7 +184,12 @@
             </aside>
           }
 
-          <button class="button" type="button" [disabled]="isPublishing() || lastPublishedSurveyId() !== null" (click)="publishSurvey()">
+          <button
+          class="button"
+          type="button"
+          [disabled]="isPublishing() || lastPublishedSurveyId() !== null || isValidationOverlayVisible() || isPublishOverlayVisible()"
+          (click)="publishSurvey()"
+          >
             Publish <img src="/icons/check.svg" alt="" />
           </button>
           @if (isPublishOverlayVisible()) {

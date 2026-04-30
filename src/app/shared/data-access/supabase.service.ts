@@ -263,6 +263,24 @@ export class SupabaseService {
     return data.id;
   }
 
+  async hasSessionSubmittedSurvey(surveyId: number, sessionId: string): Promise<boolean> {
+    this.ensureConfigured();
+
+    const { data, error } = await this.client
+      .from('submissions')
+      .select('id')
+      .eq('survey_id', surveyId)
+      .eq('session_id', sessionId)
+      .limit(1)
+      .maybeSingle<SubmissionRow>();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return Boolean(data);
+  }
+
   async createSubmissionAnswers(
     submissionId: number,
     selectedAnswers: Array<{ questionId: number; answerId: number }>,

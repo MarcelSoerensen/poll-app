@@ -57,6 +57,7 @@
 									class="ballot-question__answer"
 									[class.ballot-question__answer--selected]="isAnswerSelected(question.id, $index)"
 									type="button"
+									[disabled]="hasAlreadyVoted()"
 									[attr.role]="question.allowMultipleAnswers ? 'checkbox' : 'radio'"
 									[attr.aria-checked]="isAnswerSelected(question.id, $index)"
 									(click)="toggleAnswer(question, $index)"
@@ -85,6 +86,20 @@
 				@if (survey().questions.length > 0) {
 					<div class="ballot-form__footer">
 					<div class="publish-actions">
+						@if (isAlreadyVotedOverlayVisible()) {
+							<aside class="publish-overlay publish-overlay--error" aria-live="assertive" aria-label="Already voted message">
+								<h4 class="publish-overlay__title publish-overlay__title--error">{{ alreadyVotedMessage() }}</h4>
+								<button
+									class="publish-overlay__close-button"
+									type="button"
+									aria-label="Close already voted message"
+									(click)="closeAlreadyVotedOverlay()"
+								>
+									<img class="publish-overlay__close-icon" src="/icons/close_dark.svg" alt="" />
+								</button>
+							</aside>
+						}
+
 						@if (isValidationOverlayVisible()) {
 							<aside class="publish-overlay publish-overlay--error" aria-live="assertive" aria-label="Missing answers">
 								<h4 class="publish-overlay__title publish-overlay__title--error">{{ validationOverlayMessage() }}</h4>
@@ -99,7 +114,11 @@
 							</aside>
 						}
 
-						<button class="button" type="submit" [disabled]="isSubmitting()">
+						<button
+							class="button"
+							type="submit"
+							[disabled]="isSubmitting() || hasAlreadyVoted() || isValidationOverlayVisible() || isAlreadyVotedOverlayVisible()"
+						>
 							Submit <img src="/icons/check.svg" alt="" />
 						</button>
 					</div>

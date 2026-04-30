@@ -25,8 +25,8 @@
     transition: width 0.3s, opacity 0.3s, margin-left 0.3s;
   }
 
-  &:hover,
-  &:focus-visible {
+  &:hover:not(:disabled),
+  &:focus-visible:not(:disabled) {
     background:rgba(244, 186, 123, 1);
     outline: none;
 
@@ -38,13 +38,17 @@
     }
   }
   
-    &:active {
+    &:active:not(:disabled) {
       background-color: rgba(247, 209, 167, 1);
     }
+
+  &:disabled {
+    cursor: default;
+  }
 }
 
 @media (hover: none) {
-  .button {
+  .button:not(:disabled) {
     background: rgba(244, 186, 123, 1);
 
     img {

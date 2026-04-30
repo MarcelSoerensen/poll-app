@@ -41,6 +41,7 @@ export class Ballot {
   private readonly router = inject(Router);
   private readonly supabaseService = inject(SupabaseService);
   private readonly sessionStorageKey = 'poll-app-session-id';
+  private readonly votedSurveyIdsStorageKey = 'poll-app-voted-survey-ids';
   private voteChangesChannel: RealtimeChannel | null = null;
   private realtimeRefreshTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -57,6 +58,9 @@ export class Ballot {
   readonly submitError = signal<string | null>(null);
   readonly isValidationOverlayVisible = signal(false);
   readonly validationOverlayMessage = signal('Please answer every question before submitting.');
+  readonly hasAlreadyVoted = signal(false);
+  readonly isAlreadyVotedOverlayVisible = signal(false);
+  readonly alreadyVotedMessage = signal('You have already voted.');
 
   readonly formattedEndDate = computed(() => {
     const endDate = this.survey().endDate;
@@ -119,6 +123,11 @@ export class Ballot {
   }
 
   toggleAnswer(question: SurveyQuestion, answerIndex: number): void {
+    if (this.hasAlreadyVoted()) {
+      this.isAlreadyVotedOverlayVisible.set(true);
+      return;
+    }
+
     this.isValidationOverlayVisible.set(false);
 
     this.selectedAnswers.update((map) => {
@@ -151,6 +160,11 @@ export class Ballot {
       return;
     }
 
+    if (this.hasAlreadyVoted()) {
+      this.isAlreadyVotedOverlayVisible.set(true);
+      return;
+    }
+
     const surveyId = this.surveyId();
 
     if (!surveyId) {
@@ -179,6 +193,8 @@ export class Ballot {
       const submissionId = await this.supabaseService.createSubmission(surveyId, sessionId);
       await this.supabaseService.createSubmissionAnswers(submissionId, payload);
       await this.refreshResults(surveyId);
+      this.markSurveyAsVoted(surveyId);
+      this.hasAlreadyVoted.set(true);
 
       this.selectedAnswers.set(new Map());
       await this.router.navigate(['/main-page']);
@@ -192,6 +208,11 @@ export class Ballot {
 
   closeValidationOverlay(): void {
     this.isValidationOverlayVisible.set(false);
+  }
+
+  async closeAlreadyVotedOverlay(): Promise<void> {
+    this.isAlreadyVotedOverlayVisible.set(false);
+    await this.router.navigate(['/main-page']);
   }
 
   private async loadSurvey(): Promise<void> {
@@ -232,6 +253,7 @@ export class Ballot {
       });
       this.answerIdsByQuestion.set(answerIdsByQuestion);
       await this.refreshResults(survey.id);
+      await this.syncAlreadyVotedState(survey.id);
       this.startVoteResultsRealtimeSync(survey.id);
     } catch (error: unknown) {
       this.loadError.set(error instanceof Error ? error.message : 'Unknown error while loading the survey.');
@@ -388,6 +410,71 @@ export class Ballot {
       return created;
     } catch {
       return randomId();
+    }
+  }
+
+  private async syncAlreadyVotedState(surveyId: number): Promise<void> {
+    if (this.isSurveyMarkedAsVoted(surveyId)) {
+      this.hasAlreadyVoted.set(true);
+      this.isAlreadyVotedOverlayVisible.set(true);
+      return;
+    }
+
+    try {
+      const sessionId = this.getOrCreateSessionId();
+      const hasSubmittedSurvey = await this.supabaseService.hasSessionSubmittedSurvey(surveyId, sessionId);
+
+      if (!hasSubmittedSurvey) {
+        this.hasAlreadyVoted.set(false);
+        return;
+      }
+
+      this.markSurveyAsVoted(surveyId);
+      this.hasAlreadyVoted.set(true);
+      this.isAlreadyVotedOverlayVisible.set(true);
+    } catch {
+      this.hasAlreadyVoted.set(false);
+    }
+  }
+
+  private isSurveyMarkedAsVoted(surveyId: number): boolean {
+    const votedSurveyIds = this.getStoredVotedSurveyIds();
+    return votedSurveyIds.includes(surveyId);
+  }
+
+  private markSurveyAsVoted(surveyId: number): void {
+    const votedSurveyIds = this.getStoredVotedSurveyIds();
+
+    if (votedSurveyIds.includes(surveyId)) {
+      return;
+    }
+
+    votedSurveyIds.push(surveyId);
+
+    try {
+      localStorage.setItem(this.votedSurveyIdsStorageKey, JSON.stringify(votedSurveyIds));
+    } catch {
+      // Ignore storage errors (e.g. private mode restrictions).
+    }
+  }
+
+  private getStoredVotedSurveyIds(): number[] {
+    try {
+      const rawValue = localStorage.getItem(this.votedSurveyIdsStorageKey);
+
+      if (!rawValue) {
+        return [];
+      }
+
+      const parsed = JSON.parse(rawValue) as unknown;
+
+      if (!Array.isArray(parsed)) {
+        return [];
+      }
+
+      return parsed.filter((item): item is number => Number.isInteger(item));
+    } catch {
+      return [];
     }
   }
 }
