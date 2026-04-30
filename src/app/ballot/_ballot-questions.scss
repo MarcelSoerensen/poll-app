@@ -1,11 +1,29 @@
+.ballot-question {
+	--ballot-question-index-width: 1.45rem;
+	--ballot-question-index-gap: 0.05rem;
+}
+
 .ballot-question__title {
+	display: grid;
+	grid-template-columns: var(--ballot-question-index-width) 1fr;
+	column-gap: var(--ballot-question-index-gap);
+	align-items: start;
 	margin: 0 0 0.5rem;
 	font-size: 1rem;
 	font-weight: 600;
 	color: rgba(51, 40, 57, 1);
 }
 
+.ballot-question__index {
+	text-align: left;
+}
+
+.ballot-question__title-text {
+	min-width: 0;
+}
+
 .ballot-question__multiple-hint {
+	padding-left: calc(var(--ballot-question-index-width) + var(--ballot-question-index-gap));
 	margin: 0 0 0.75rem;
 	font-size: 0.85rem;
 	font-weight: 300;

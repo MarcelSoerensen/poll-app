@@ -10,6 +10,6 @@ export function createSurveyQuestion(id: number): SurveyQuestion {
     id,
     prompt: '',
     allowMultipleAnswers: false,
-    answers: ['', '', ''],
+    answers: ['', ''],
   };
 }

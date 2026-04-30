@@ -25,10 +25,24 @@
 }
 
 .ballot-results__question-title {
+	--ballot-results-index-width: 1.45rem;
+	--ballot-results-index-gap: 0.05rem;
+	display: grid;
+	grid-template-columns: var(--ballot-results-index-width) 1fr;
+	column-gap: var(--ballot-results-index-gap);
+	align-items: start;
 	margin: 0 0 0.75rem;
 	font-size: 0.95rem;
 	font-weight: 600;
 	color: rgba(51, 40, 57, 1);
+}
+
+.ballot-results__question-index {
+	text-align: left;
+}
+
+.ballot-results__question-text {
+	min-width: 0;
 }
 
 .ballot-results__answers {
