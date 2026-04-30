@@ -150,6 +150,10 @@
 }
 
 @media (width <= 900px) {
+	#imprint .page-nav__inner {
+		width: 94%;
+	}
+
 	.imprint-page {
 		width: 94%;
 		margin-inline: auto;

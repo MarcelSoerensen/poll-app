@@ -150,6 +150,10 @@
 }
 
 @media (width <= 900px) {
+	#privacy-policy .page-nav__inner {
+		width: 94%;
+	}
+
 	.privacy-page {
 		width: 94%;
 		margin-inline: auto;

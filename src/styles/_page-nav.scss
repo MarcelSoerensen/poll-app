@@ -1,16 +1,21 @@
 .page-nav {
   position: fixed;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(88vw, 1440px);
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 10;
+  padding: 2rem 0 0.8rem 0;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(2px);
+}
+
+.page-nav__inner {
+  width: min(88vw, 1440px);
+  margin-inline: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem 0 0.8rem  0;
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(2px);
 }
 
 .page-nav__logo {
@@ -26,7 +31,9 @@
 }
 
 .page-nav--responsive {
-  justify-content: flex-start;
+  .page-nav__inner {
+    justify-content: flex-start;
+  }
 }
 
 @media (width > 1030px) {

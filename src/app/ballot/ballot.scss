@@ -190,9 +190,8 @@
 }
 
 @media (width <= 900px) {
-	#ballot .page-nav {
+	#ballot .page-nav__inner {
 		width: 94%;
-		padding-inline: 5%;
 	}
 
 	.ballot-page {
