@@ -1,1 +1,95 @@
-<p>imprint works!</p>
+<section id="imprint">
+	<nav class="page-nav">
+		<img class="page-nav__logo" src="/icons/logo_dark.svg" alt="" [routerLink]="'/main-page'" />
+	</nav>
+
+	<article class="imprint-page">
+		<div class="imprint-page__form">
+			<header class="imprint-header">
+				<p class="status-label">Legal</p>
+				<button class="basic-button imprint-header__close" type="button" [routerLink]="'/main-page'" aria-label="Close imprint page">
+					<span>Close</span>
+					<img src="/icons/close_dark.svg" alt="" />
+				</button>
+			</header>
+
+			<h1>Impressum</h1>
+			<h2>Angaben gemäß § 5 DDG</h2>
+
+			<div class="imprint-content">
+
+			<p>
+				Marcel Sörensen<br>
+				Schloßallee 45<br>
+				13156 Berlin
+			</p>
+
+			<h3>Vertreten durch</h3>
+			<p>Marcel Sörensen</p>
+
+			<h3>Kontakt</h3>
+			<p>
+				<a href="tel:+4917631055989">Tel: +49 176 310 55 989</a><br>
+				E-Mail: <a href="mailto:contact@marcel-soerensen.com">contact@marcel-soerensen.com</a>
+			</p>
+
+			<h3>Verbraucherstreitbeilegung / Universalschlichtungsstelle</h3>
+			<p>
+				Wir nehmen nicht an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teil und sind dazu auch nicht verpflichtet.
+			</p>
+
+			<h3>Haftungsausschluss</h3>
+
+			<h4>Haftung für Inhalte</h4>
+			<p>
+				Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte
+				können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf
+				diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als Diensteanbieter jedoch nicht
+				verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine
+				rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen
+				Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten
+				Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.
+			</p>
+
+			<h4>Haftung für Links</h4>
+			<p>
+				Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese
+				fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber
+				der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft.
+				Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten
+				ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir
+				derartige Links umgehend entfernen.
+			</p>
+
+			<h4>Urheberrecht</h4>
+			<p>
+				Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die
+				Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der
+				schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten,
+				nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die
+				Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine
+				Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden
+				wir derartige Inhalte umgehend entfernen.
+			</p>
+
+				<p>
+					Impressum von
+					<a href="https://websitewissen.com" target="_blank" rel="noopener noreferrer nofollow">WebsiteWissen.com</a>,
+					dem Ratgeber für
+					<a href="https://websitewissen.com/wordpress-website-erstellen" target="_blank" rel="noopener noreferrer nofollow">WordPress-Websites</a>,
+					<a href="https://websitewissen.com/wordpress-hosting-vergleich" target="_blank" rel="noopener noreferrer nofollow">WordPress-Hosting</a>
+					und
+					<a href="https://websitewissen.com/website-kosten" target="_blank" rel="noopener noreferrer nofollow">Website-Kosten</a>
+					nach einem Muster von
+					<a href="https://www.kanzlei-hasselbach.de/" target="_blank" rel="noopener noreferrer nofollow">Kanzlei Hasselbach Rechtsanwälte</a>.
+				</p>
+			</div>
+		</div>
+	</article>
+
+	<footer class="legal-links" aria-label="Legal links">
+		<a class="legal-links__link" [routerLink]="'/privacy-policy'">Privacy Policy</a>
+		<span class="legal-links__separator" aria-hidden="true">|</span>
+		<a class="legal-links__link" [routerLink]="'/main-page'">Back</a>
+	</footer>
+</section>

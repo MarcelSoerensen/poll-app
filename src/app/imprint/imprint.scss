@@ -1,0 +1,169 @@
+:host {
+	background: rgba(255, 255, 255, 1);
+	display: block;
+	min-height: 100vh;
+}
+
+#imprint {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	position: relative;
+	padding: 6.5rem 0 0;
+	box-sizing: border-box;
+}
+
+#imprint > .legal-links {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0.75rem;
+}
+
+.imprint-page {
+	display: flex;
+	gap: 0;
+	border-radius: 5px 100px 5px 5px;
+	min-height: 75vh;
+	width: min(1440px, clamp(88%, calc(88% + 12% * ((900px - 100vw) / 900px)), 100%));
+	margin-inline: auto;
+	background-color: rgba(255, 255, 255, 1);
+	color: rgba(51, 40, 57, 1);
+	font-family: 'Mulish', sans-serif;
+	overflow: hidden;
+}
+
+.imprint-page__form {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	padding: 40px 54px;
+	background-color: rgba(241, 238, 244, 1);
+	border-radius: 0 100px 0 0;
+	overflow: hidden;
+}
+
+.imprint-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	margin-bottom: 0.5rem;
+}
+
+.status-label {
+	margin: 0;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: rgba(51, 40, 57, 1);
+	background-color: rgba(214, 153, 88, 1);
+	padding: 0.28rem 0.62rem;
+	border-radius: 0 16px 0 0;
+	width: fit-content;
+}
+
+.imprint-header__close {
+	display: inline-flex;
+	background-color: rgba(241, 210, 173, 1);
+	color: rgba(51, 40, 57, 1);
+	padding: 0.5em 0.75em !important;
+
+	span {
+		display: none;
+	}
+
+	&:hover,
+	&:focus-visible {
+		background-color: rgba(244, 186, 123, 1);
+	}
+}
+
+.imprint-content {
+	padding: 0;
+	margin-top: 0.75rem;
+	padding-bottom: 3rem;
+	overflow-y: auto;
+
+	h2 {
+		margin: 1.5rem 0 0;
+		font-size: clamp(1.5rem, 1.2rem + 1vw, 2.2rem);
+		color: rgba(225, 150, 74, 1);
+		font-family: 'Nerko One', cursive;
+		font-weight: 400;
+	}
+
+	h3 {
+		margin: 1.4rem 0 0.5rem;
+		font-size: 1.15rem;
+		font-weight: 700;
+		color: rgba(51, 40, 57, 1);
+	}
+
+	h4 {
+		margin: 1rem 0 0.45rem;
+		font-size: 1rem;
+		font-weight: 700;
+		color: rgba(51, 40, 57, 0.95);
+	}
+
+	p,
+	li {
+		margin: 0.35rem 0;
+		font-size: 1rem;
+		line-height: 1.6;
+		font-weight: 300;
+		color: rgba(51, 40, 57, 1);
+	}
+
+	a {
+		color: rgba(119, 92, 86, 1);
+		text-decoration-thickness: 1px;
+		text-underline-offset: 2px;
+
+		&:hover,
+		&:focus-visible {
+			color: rgba(214, 153, 88, 1);
+			outline: none;
+		}
+	}
+}
+
+.imprint-page__form > h1 {
+	margin: 0;
+	font-size: 3.5rem;
+	font-weight: 400;
+	color: rgba(225, 150, 74, 1);
+	font-family: 'Nerko One', cursive;
+}
+
+@media (width <= 1030px) {
+	.imprint-page {
+		flex-direction: column;
+		border-radius: 5px 100px 5px 5px;
+	}
+
+	#imprint {
+		padding-bottom: 4.5rem;
+	}
+}
+
+@media (width <= 900px) {
+	.imprint-page {
+		width: 94%;
+		margin-inline: auto;
+	}
+
+	.imprint-page__form {
+		padding: 40px 5%;
+	}
+
+	.imprint-header__close {
+		margin-right: 8px !important;
+	}
+
+	.imprint-page__form > h1 {
+		font-size: clamp(2.2rem, 1.8rem + 2.2vw, 3rem);
+	}
+}
