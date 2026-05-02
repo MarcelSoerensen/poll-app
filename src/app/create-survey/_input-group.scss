@@ -94,24 +94,31 @@
   display: inline-grid;
   flex-shrink: 0;
   cursor: pointer;
+  border: 0;
+  background: transparent;
+  padding: 0;
 }
 
 .input-group__delete-icon {
   grid-area: 1 / 1;
-  display: block;
-  transition: opacity 0.2s;
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-image: url('/assets/icons/delete_default.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  transition: background-image 0.2s;
 }
 
-.input-group__delete-icon--hover {
-  opacity: 0;
+.input-group__delete-icon-wrapper:hover .input-group__delete-icon,
+.input-group__delete-icon-wrapper:focus-visible .input-group__delete-icon {
+  background-image: url('/assets/icons/delete_hover.svg');
 }
 
-.input-group__delete-icon-wrapper:hover .input-group__delete-icon--default {
-  opacity: 0;
-}
-
-.input-group__delete-icon-wrapper:hover .input-group__delete-icon--hover {
-  opacity: 1;
+.input-group__delete-icon-wrapper:focus-visible {
+  outline: 2px solid rgba(244, 186, 123, 1);
+  outline-offset: 2px;
 }
 
 @media (width <= 1030px) {

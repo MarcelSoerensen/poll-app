@@ -5,8 +5,7 @@
     </p>
     <button class="question-item__icon-button" type="button" aria-label="Delete question" (click)="deleteQuestion()">
       <span class="question-item__delete-icon-wrapper">
-        <img class="question-item__delete-icon question-item__delete-icon--default" src="/assets/icons/delete_default.svg" alt="" />
-        <img class="question-item__delete-icon question-item__delete-icon--hover" src="/assets/icons/delete_hover.svg" alt="" />
+        <span class="question-item__delete-icon" aria-hidden="true"></span>
       </span>
     </button>
   </div>
@@ -59,8 +58,7 @@
         />
         <button class="question-item__icon-button" type="button" aria-label="Delete answer" (click)="deleteAnswer($index)">
           <span class="question-item__delete-icon-wrapper">
-            <img class="question-item__delete-icon question-item__delete-icon--default" src="/assets/icons/delete_default.svg" alt="" />
-            <img class="question-item__delete-icon question-item__delete-icon--hover" src="/assets/icons/delete_hover.svg" alt="" />
+            <span class="question-item__delete-icon" aria-hidden="true"></span>
           </span>
         </button>
       </div>

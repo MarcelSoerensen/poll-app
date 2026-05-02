@@ -83,20 +83,24 @@
   transition: opacity 0.2s;
 }
 
-.question-item__delete-icon--hover,
+.question-item__delete-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  background-image: url('/assets/icons/delete_default.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  transition: background-image 0.2s;
+}
+
 .question-item__checkbox-icon--hover,
 .question-item__checkbox-icon--checked {
   opacity: 0;
 }
 
-.question-item__icon-button:hover .question-item__delete-icon--default,
-.question-item__icon-button:focus-visible .question-item__delete-icon--default {
-  opacity: 0;
-}
-
-.question-item__icon-button:hover .question-item__delete-icon--hover,
-.question-item__icon-button:focus-visible .question-item__delete-icon--hover {
-  opacity: 1;
+.question-item__icon-button:hover .question-item__delete-icon,
+.question-item__icon-button:focus-visible .question-item__delete-icon {
+  background-image: url('/assets/icons/delete_hover.svg');
 }
 
 .question-item__checkbox-button {

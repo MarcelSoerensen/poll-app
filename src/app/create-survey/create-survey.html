@@ -27,18 +27,9 @@
               <label class="input-group__label" [class.input-group__label--invalid]="isTitleInvalid()" for="survey-title">
                 Survey name
               </label>
-              <span class="input-group__delete-icon-wrapper" (click)="clearTitle()">
-                <img
-                  class="input-group__delete-icon input-group__delete-icon--default"
-                  src="/assets/icons/delete_default.svg"
-                  alt=""
-                />
-                <img
-                  class="input-group__delete-icon input-group__delete-icon--hover"
-                  src="/assets/icons/delete_hover.svg"
-                  alt=""
-                />
-              </span>
+              <button class="input-group__delete-icon-wrapper" type="button" aria-label="Clear survey name" (click)="clearTitle()">
+                <span class="input-group__delete-icon" aria-hidden="true"></span>
+              </button>
               <div class="input-group__control">
                 <input
                   id="survey-title"
@@ -58,18 +49,9 @@
                 <label class="input-group__label" for="survey-end-date">
                   Set end date <span class="input-group__optional">(optional)</span>
                 </label>
-                <span class="input-group__delete-icon-wrapper" (click)="clearEndDate()">
-                  <img
-                    class="input-group__delete-icon input-group__delete-icon--default"
-                    src="/assets/icons/delete_default.svg"
-                    alt=""
-                  />
-                  <img
-                    class="input-group__delete-icon input-group__delete-icon--hover"
-                    src="/assets/icons/delete_hover.svg"
-                    alt=""
-                  />
-                </span>
+                <button class="input-group__delete-icon-wrapper" type="button" aria-label="Clear end date" (click)="clearEndDate()">
+                  <span class="input-group__delete-icon" aria-hidden="true"></span>
+                </button>
                 <div class="input-group__control">
                   <input
                     id="survey-end-date"
@@ -124,18 +106,9 @@
               <label class="input-group__label" for="survey-description">
                 Survey description <span class="input-group__optional">(optional)</span>
               </label>
-              <span class="input-group__delete-icon-wrapper" (click)="clearDescription()">
-                <img
-                  class="input-group__delete-icon input-group__delete-icon--default"
-                  src="/assets/icons/delete_default.svg"
-                  alt=""
-                />
-                <img
-                  class="input-group__delete-icon input-group__delete-icon--hover"
-                  src="/assets/icons/delete_hover.svg"
-                  alt=""
-                />
-              </span>
+              <button class="input-group__delete-icon-wrapper" type="button" aria-label="Clear survey description" (click)="clearDescription()">
+                <span class="input-group__delete-icon" aria-hidden="true"></span>
+              </button>
               <div class="input-group__control input-group__control--textarea">
                 <textarea
                   id="survey-description"
@@ -189,7 +162,7 @@
           <button
           class="button"
           type="button"
-          [disabled]="isPublishing() || lastPublishedSurveyId() !== null || isValidationOverlayVisible() || isPublishOverlayVisible()"
+          [disabled]="isPublishing() || lastPublishedSurveyId() !== null || isPublishOverlayVisible()"
           (click)="publishSurvey()"
           >
             Publish <img src="/assets/icons/check.svg" alt="" />
