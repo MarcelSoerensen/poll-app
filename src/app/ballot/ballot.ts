@@ -42,8 +42,11 @@ export class Ballot {
   private readonly supabaseService = inject(SupabaseService);
   private readonly sessionStorageKey = 'poll-app-session-id';
   private readonly votedSurveyIdsStorageKey = 'poll-app-voted-survey-ids';
+  private readonly overlayAutoActionDelayMs = 4000;
   private voteChangesChannel: RealtimeChannel | null = null;
   private realtimeRefreshTimer: ReturnType<typeof setTimeout> | null = null;
+  private validationOverlayTimer: ReturnType<typeof setTimeout> | null = null;
+  private alreadyVotedOverlayTimer: ReturnType<typeof setTimeout> | null = null;
 
   readonly survey = signal<SurveyData>(createEmptySurvey());
   readonly surveyId = signal<number | null>(null);
@@ -103,6 +106,8 @@ export class Ballot {
   constructor() {
     this.destroyRef.onDestroy(() => {
       this.clearRealtimeRefreshTimer();
+      this.clearValidationOverlayTimer();
+      this.clearAlreadyVotedOverlayTimer();
       this.supabaseService.unsubscribeChannel(this.voteChangesChannel);
       this.voteChangesChannel = null;
     });
@@ -124,11 +129,11 @@ export class Ballot {
 
   toggleAnswer(question: SurveyQuestion, answerIndex: number): void {
     if (this.hasAlreadyVoted()) {
-      this.isAlreadyVotedOverlayVisible.set(true);
+      this.showAlreadyVotedOverlay();
       return;
     }
 
-    this.isValidationOverlayVisible.set(false);
+    this.closeValidationOverlay();
 
     this.selectedAnswers.update((map) => {
       const next = new Map(map);
@@ -161,7 +166,7 @@ export class Ballot {
     }
 
     if (this.hasAlreadyVoted()) {
-      this.isAlreadyVotedOverlayVisible.set(true);
+      this.showAlreadyVotedOverlay();
       return;
     }
 
@@ -180,13 +185,13 @@ export class Ballot {
     if (payload === null) {
       this.submitError.set(null);
       this.validationOverlayMessage.set('Please answer every question before submitting.');
-      this.isValidationOverlayVisible.set(true);
+      this.showValidationOverlay();
       return;
     }
 
     this.isSubmitting.set(true);
     this.submitError.set(null);
-    this.isValidationOverlayVisible.set(false);
+    this.closeValidationOverlay();
 
     try {
       const sessionId = this.getOrCreateSessionId();
@@ -200,17 +205,19 @@ export class Ballot {
       await this.router.navigate(['/main-page']);
     } catch (error: unknown) {
       this.submitError.set(error instanceof Error ? error.message : 'Unknown error while submitting the vote.');
-      this.isValidationOverlayVisible.set(false);
+      this.closeValidationOverlay();
     } finally {
       this.isSubmitting.set(false);
     }
   }
 
   closeValidationOverlay(): void {
+    this.clearValidationOverlayTimer();
     this.isValidationOverlayVisible.set(false);
   }
 
   async closeAlreadyVotedOverlay(): Promise<void> {
+    this.clearAlreadyVotedOverlayTimer();
     this.isAlreadyVotedOverlayVisible.set(false);
     await this.router.navigate(['/main-page']);
   }
@@ -416,7 +423,7 @@ export class Ballot {
   private async syncAlreadyVotedState(surveyId: number): Promise<void> {
     if (this.isSurveyMarkedAsVoted(surveyId)) {
       this.hasAlreadyVoted.set(true);
-      this.isAlreadyVotedOverlayVisible.set(true);
+      this.showAlreadyVotedOverlay();
       return;
     }
 
@@ -431,10 +438,46 @@ export class Ballot {
 
       this.markSurveyAsVoted(surveyId);
       this.hasAlreadyVoted.set(true);
-      this.isAlreadyVotedOverlayVisible.set(true);
+      this.showAlreadyVotedOverlay();
     } catch {
       this.hasAlreadyVoted.set(false);
     }
+  }
+
+  private showValidationOverlay(): void {
+    this.isValidationOverlayVisible.set(true);
+    this.clearValidationOverlayTimer();
+    this.validationOverlayTimer = setTimeout(() => {
+      this.validationOverlayTimer = null;
+      this.closeValidationOverlay();
+    }, this.overlayAutoActionDelayMs);
+  }
+
+  private showAlreadyVotedOverlay(): void {
+    this.isAlreadyVotedOverlayVisible.set(true);
+    this.clearAlreadyVotedOverlayTimer();
+    this.alreadyVotedOverlayTimer = setTimeout(() => {
+      this.alreadyVotedOverlayTimer = null;
+      void this.closeAlreadyVotedOverlay();
+    }, this.overlayAutoActionDelayMs);
+  }
+
+  private clearValidationOverlayTimer(): void {
+    if (this.validationOverlayTimer === null) {
+      return;
+    }
+
+    clearTimeout(this.validationOverlayTimer);
+    this.validationOverlayTimer = null;
+  }
+
+  private clearAlreadyVotedOverlayTimer(): void {
+    if (this.alreadyVotedOverlayTimer === null) {
+      return;
+    }
+
+    clearTimeout(this.alreadyVotedOverlayTimer);
+    this.alreadyVotedOverlayTimer = null;
   }
 
   private isSurveyMarkedAsVoted(surveyId: number): boolean {

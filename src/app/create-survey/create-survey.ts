@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 import { SupabaseService } from '../shared/data-access/supabase.service';
@@ -61,6 +61,10 @@ function getTomorrowIsoDate(): string {
 export class CreateSurvey {
   private readonly supabaseService = inject(SupabaseService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly overlayAutoActionDelayMs = 4000;
+  private publishOverlayTimer: ReturnType<typeof setTimeout> | null = null;
+  private validationOverlayTimer: ReturnType<typeof setTimeout> | null = null;
 
   readonly categories = [
     'Team Activities',
@@ -83,6 +87,13 @@ export class CreateSurvey {
   readonly lastPublishedSurveyId = signal<number | null>(null);
   readonly isPublishOverlayVisible = signal(false);
   readonly isValidationOverlayVisible = signal(false);
+
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.clearPublishOverlayTimer();
+      this.clearValidationOverlayTimer();
+    });
+  }
 
   toggleCategoryDropdown(): void {
     this.isCategoryDropdownOpen.update((isOpen) => !isOpen);
@@ -181,8 +192,8 @@ export class CreateSurvey {
     const isValid = this.refreshValidationState();
 
     if (!isValid) {
-      this.isPublishOverlayVisible.set(false);
-      this.isValidationOverlayVisible.set(true);
+      this.hidePublishOverlay();
+      this.showValidationOverlay();
       this.lastPublishedSurveyId.set(null);
       this.publishError.set(null);
       return;
@@ -193,8 +204,8 @@ export class CreateSurvey {
 
     this.isPublishing.set(true);
     this.publishError.set(null);
-    this.isPublishOverlayVisible.set(false);
-    this.isValidationOverlayVisible.set(false);
+    this.hidePublishOverlay();
+    this.hideValidationOverlay();
     this.lastPublishedSurveyId.set(null);
 
     try {
@@ -209,7 +220,7 @@ export class CreateSurvey {
       await this.supabaseService.createAnswersForQuestions(createdQuestions, survey.questions);
 
       this.lastPublishedSurveyId.set(surveyId);
-      this.isPublishOverlayVisible.set(true);
+      this.showPublishOverlay();
     } catch (error: unknown) {
       this.publishError.set(error instanceof Error ? error.message : 'Unknown error while saving the survey.');
     } finally {
@@ -224,12 +235,12 @@ export class CreateSurvey {
       return;
     }
 
-    this.isPublishOverlayVisible.set(false);
+    this.hidePublishOverlay();
     await this.router.navigate(['/ballot', surveyId]);
   }
 
   closeValidationOverlay(): void {
-    this.isValidationOverlayVisible.set(false);
+    this.hideValidationOverlay();
   }
 
   isTitleInvalid(): boolean {
@@ -255,8 +266,50 @@ export class CreateSurvey {
     this.refreshValidationState();
   }
 
+  private showValidationOverlay(): void {
+    this.isValidationOverlayVisible.set(true);
+    this.clearValidationOverlayTimer();
+    this.validationOverlayTimer = setTimeout(() => {
+      this.validationOverlayTimer = null;
+      this.closeValidationOverlay();
+    }, this.overlayAutoActionDelayMs);
+  }
+
+  private showPublishOverlay(): void {
+    this.isPublishOverlayVisible.set(true);
+    this.clearPublishOverlayTimer();
+    this.publishOverlayTimer = setTimeout(() => {
+      this.publishOverlayTimer = null;
+      void this.openPublishedSurvey();
+    }, this.overlayAutoActionDelayMs);
+  }
+
+  private hidePublishOverlay(): void {
+    this.clearPublishOverlayTimer();
+    this.isPublishOverlayVisible.set(false);
+  }
+
   private hideValidationOverlay(): void {
+    this.clearValidationOverlayTimer();
     this.isValidationOverlayVisible.set(false);
+  }
+
+  private clearPublishOverlayTimer(): void {
+    if (this.publishOverlayTimer === null) {
+      return;
+    }
+
+    clearTimeout(this.publishOverlayTimer);
+    this.publishOverlayTimer = null;
+  }
+
+  private clearValidationOverlayTimer(): void {
+    if (this.validationOverlayTimer === null) {
+      return;
+    }
+
+    clearTimeout(this.validationOverlayTimer);
+    this.validationOverlayTimer = null;
   }
 
   private refreshValidationState(): boolean {
