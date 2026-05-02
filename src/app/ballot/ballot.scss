@@ -19,13 +19,6 @@
 	box-sizing: border-box;
 }
 
-#ballot > .legal-links {
-	position: absolute;
-	left: 0;
-	right: 0;
-	bottom: 0.75rem;
-}
-
 
 .ballot-page {
 	display: flex;
@@ -270,6 +263,6 @@
 
 @media (width <= 1030px) {
 	#ballot {
-		padding-bottom: 4.5rem;
+		padding-bottom: 0;
 	}
 }
